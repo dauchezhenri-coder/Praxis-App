@@ -79,6 +79,112 @@
 }
 
 /* ────────────────────────────────────────────
+   PLANNING — Variables & Timeline Classes
+──────────────────────────────────────────── */
+:root {
+  --midnight: #020617;
+  --indigo-glow: #6366F1;
+  --gold-prestige: #FFD700;
+  --slate-surface: #0F172A;
+  --timeline-bg: #070B14;
+}
+
+.timeline-line {
+  background: linear-gradient(to bottom, #1e293b 0%, #1e293b 30%, #6366f1 50%, #1e293b 100%);
+}
+
+.indigo-gradient-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(67, 56, 202, 0.05) 100%);
+}
+
+.ios-blur {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Toutes les vues secondaires : hauteur plein écran garantie */
+#view-planning,
+#view-bibliotheque,
+#view-settings,
+#view-classement,
+#view-entrainement {
+  min-height: calc(100vh - 72px);
+  width: 100%;
+}
+
+#view-planning.block,
+#view-bibliotheque.block,
+#view-settings.block {
+  display: block !important;
+  overflow-y: auto;
+}
+
+/* ────────────────────────────────────────────
+   PLANNING — DS Reminder & Tooltip
+──────────────────────────────────────────── */
+.ds-reminder-container {
+  margin-top: 40px;
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ds-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ds-btn-details {
+  font-size: 10px;
+  font-weight: 800;
+  color: #6366F1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-family: inherit;
+}
+
+.ds-btn-details:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #818CF8;
+}
+
+.ds-tooltip {
+  font-size: 9px;
+  color: #94A3B8;
+  font-weight: 500;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.ds-tooltip.visible {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ────────────────────────────────────────────
    RESET & BASE
 ──────────────────────────────────────────── */
 *,
