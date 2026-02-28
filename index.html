@@ -384,42 +384,117 @@
     <div id="view-planning" class="flex-1 overflow-y-auto hidden bg-[#1a1e26] pb-32"></div>
     <div id="view-classement" class="flex-1 overflow-y-auto hidden bg-[#1a1e26] pb-32"></div>
     <div id="view-entrainement" class="flex-1 overflow-y-auto hidden bg-[#1a1e26] pb-32"></div>
-    <div id="view-settings" class="flex-1 overflow-y-auto hidden bg-[#0F172A] text-white">
-      <header class="pt-14 px-6 pb-10 bg-gradient-to-b from-white/5 to-transparent">
-        <button onclick="showView('view-dashboard')" class="flex items-center gap-2 text-indigo-400 font-bold mb-8">
-          <span class="material-symbols-outlined">arrow_back</span><span class="text-sm">Retour</span>
-        </button>
-        <h1 class="text-3xl font-black tracking-tight">Réglages</h1>
+    <div id="view-settings" class="flex-1 overflow-y-auto hidden"
+      style="background-color: #1A2238; color: white; padding-bottom: 120px; font-family: 'Space Grotesk', 'Inter', sans-serif;">
+
+      <!-- Header + Profil -->
+      <header style="padding: 60px 24px 20px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 28px;">
+          <button onclick="showView('view-dashboard')"
+            style="display: flex; align-items: center; gap: 6px; background: transparent; border: none; color: #818CF8; font-weight: 700; font-size: 14px; cursor: pointer; padding: 0;">
+            <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+            Retour
+          </button>
+        </div>
+        <h1 style="font-size: 32px; font-weight: 800; margin: 0 0 24px;">Réglages</h1>
+
+        <!-- Carte Profil -->
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; align-items: center; gap: 16px;">
+          <div
+            style="width: 60px; height: 60px; border-radius: 20px; background: linear-gradient(135deg, #6366F1, #818CF8); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; flex-shrink: 0;">
+            H</div>
+          <div style="flex: 1;">
+            <h2 style="font-size: 18px; font-weight: 700; margin: 0;">Henri Dauchez</h2>
+            <p style="font-size: 12px; color: #94A3B8; margin: 4px 0 0;">henridauchez@icloud.com</p>
+          </div>
+          <div
+            style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); padding: 4px 12px; border-radius: 12px; color: #F59E0B; font-size: 10px; font-weight: 800; letter-spacing: 1px;">
+            PRO</div>
+        </div>
       </header>
-      <main class="px-6 space-y-6">
-        <div class="bg-white/5 border border-white/10 rounded-[2rem] p-6 flex items-center justify-between shadow-2xl">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-xl font-black">HA
+
+      <!-- Liste des réglages -->
+      <div style="padding: 0 24px;">
+
+        <!-- Section Compte -->
+        <p
+          style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 12px 4px;">
+          Mon Compte</p>
+        <div
+          style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; overflow: hidden; margin-bottom: 24px;">
+          <!-- Détails du compte -->
+          <div
+            style="padding: 18px 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;">
+            <div
+              style="width: 36px; height: 36px; border-radius: 12px; background: rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #6366F1; font-size: 20px;">person</span>
             </div>
-            <div>
-              <p class="font-bold text-lg text-white">Henri A.</p>
-              <p class="text-xs text-slate-500 font-medium">henri.a@praxis.edu</p>
-            </div>
+            <span style="flex: 1; font-size: 15px; font-weight: 500;">Détails du compte</span>
+            <span class="material-symbols-outlined" style="color: #334155; font-size: 20px;">chevron_right</span>
           </div>
-          <span class="material-symbols-outlined text-slate-500">edit</span>
+          <!-- Notifications -->
+          <div
+            style="padding: 18px 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer;">
+            <div
+              style="width: 36px; height: 36px; border-radius: 12px; background: rgba(16,185,129,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #10B981; font-size: 20px;">notifications</span>
+            </div>
+            <span style="flex: 1; font-size: 15px; font-weight: 500;">Notifications</span>
+            <span class="material-symbols-outlined" style="color: #334155; font-size: 20px;">chevron_right</span>
+          </div>
+          <!-- Sécurité -->
+          <div style="padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer;">
+            <div
+              style="width: 36px; height: 36px; border-radius: 12px; background: rgba(245,158,11,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #F59E0B; font-size: 20px;">verified_user</span>
+            </div>
+            <span style="flex: 1; font-size: 15px; font-weight: 500;">Sécurité</span>
+            <span class="material-symbols-outlined" style="color: #334155; font-size: 20px;">chevron_right</span>
+          </div>
         </div>
-        <div class="bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden">
-          <div class="p-5 border-b border-white/5 flex items-center justify-between">
-            <div class="flex items-center gap-4"><span
-                class="material-symbols-outlined text-slate-400">dark_mode</span><span class="font-bold">Mode
-                Sombre</span></div>
-            <div class="w-10 h-5 bg-indigo-600 rounded-full relative">
-              <div class="absolute right-1 top-1 w-3 h-3 bg-white rounded-full"></div>
+
+        <!-- Section Préférences -->
+        <p
+          style="font-size: 10px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 12px 4px;">
+          Préférences</p>
+        <div
+          style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; overflow: hidden; margin-bottom: 24px;">
+          <!-- Mode Sombre -->
+          <div
+            style="padding: 18px 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <div
+              style="width: 36px; height: 36px; border-radius: 12px; background: rgba(129,140,248,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #818CF8; font-size: 20px;">dark_mode</span>
+            </div>
+            <span style="flex: 1; font-size: 15px; font-weight: 500;">Mode Sombre</span>
+            <!-- Toggle ON -->
+            <div
+              style="width: 44px; height: 24px; background: #6366F1; border-radius: 12px; position: relative; cursor: pointer;">
+              <div
+                style="position: absolute; right: 3px; top: 3px; width: 18px; height: 18px; background: white; border-radius: 50%;">
+              </div>
             </div>
           </div>
-          <div class="p-5 flex items-center justify-between">
-            <div class="flex items-center gap-4"><span
-                class="material-symbols-outlined text-slate-400">notifications</span><span
-                class="font-bold">Notifications</span></div>
-            <span class="material-symbols-outlined text-slate-600">chevron_right</span>
+          <!-- Langue -->
+          <div style="padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer;">
+            <div
+              style="width: 36px; height: 36px; border-radius: 12px; background: rgba(16,185,129,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #10B981; font-size: 20px;">language</span>
+            </div>
+            <span style="flex: 1; font-size: 15px; font-weight: 500;">Langue</span>
+            <span style="color: #475569; font-size: 14px; margin-right: 4px;">Français</span>
+            <span class="material-symbols-outlined" style="color: #334155; font-size: 20px;">chevron_right</span>
           </div>
         </div>
-      </main>
+
+        <!-- Bouton Déconnexion -->
+        <button onclick="showToast('👋 Déconnexion...')"
+          style="width: 100%; background: rgba(239,68,68,0.08); color: #EF4444; border: 1px solid rgba(239,68,68,0.2); padding: 16px; border-radius: 20px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit;">
+          Déconnexion
+        </button>
+
+      </div>
     </div>
 
     <!-- ===================== BOTTOM NAV ===================== -->
