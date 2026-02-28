@@ -3208,3 +3208,15 @@ function startFocusTimer(minutes) {
 
 // On vérifie toutes les minutes si un créneau important approche
 setInterval(checkFocusTriggers, 60000);
+
+/* ============================================================
+   PLANNING — DS Details Toggle
+   ============================================================ */
+function toggleDSDetails() {
+  const tooltip = document.getElementById('dsTooltip');
+  if (!tooltip) return;
+  tooltip.classList.toggle('visible');
+  if (tooltip.classList.contains('visible')) {
+    showToast("📍 Infos DS : Salle commune");
+  }
+}
