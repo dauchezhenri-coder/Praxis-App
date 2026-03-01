@@ -2204,7 +2204,7 @@ function switchView(screenId) {
       startQcmMode();
       // LANCEMENT DE L'ANCRAGE À 12h30
       anchorLivePointAt1230();
-      showToast("❄️ Vendredi 27 Février synchronisé (12h30).");
+      showToast("🚀 Planning mis à jour.");
     }
   }
 }
@@ -2865,7 +2865,10 @@ function renderCleanPraxis() {
         <div class="w-full h-full bg-[#FFFFFF] flex flex-col relative overflow-hidden">
             <!-- HEADER NEUF -->
             <header class="praxis-header-absolute">
-                <h1 class="date-label-black">Vendredi 27 Fév.</h1>
+                <div class="date-card" style="background:#3B82F6; color:white; padding:10px 20px; border-radius:15px; display:inline-flex; align-items:center; gap:10px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); margin: 0 0 10px 20px;">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">calendar_today</span>
+                    <span style="font-weight: 900; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">PLANNING DU JOUR</span>
+                </div>
                 
                 <div class="tools-absolute-group">
                     <div class="tool-pill-base scanner-pill-btn" onclick="document.getElementById('hiddenFileInput').click()">
@@ -2885,9 +2888,9 @@ function renderCleanPraxis() {
             <div class="flex-1 overflow-y-auto w-full pb-24 no-scrollbar relative pl-[40px] pr-6 pt-4">
                 <div class="timeline-rail-clean" style="top: 48px;"></div>
                 
-                <!-- LIVE MARKER 13:06 -->
-                <div class="live-time-red-clean" style="top: 250px;">
-                    <span class="live-time-text">13:06</span>
+                <!-- LIVE MARKER 12:52 -->
+                <div class="live-time-red-clean" style="top: 232px;">
+                    <span class="live-time-text">12:52</span>
                     <div class="live-pulse-dot"></div>
                 </div>
 
