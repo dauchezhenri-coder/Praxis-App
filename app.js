@@ -2862,12 +2862,12 @@ function renderCleanPraxis() {
   if (!container) return;
 
   container.innerHTML = `
-        <div class="w-full h-full bg-[#FFFFFF] flex flex-col relative overflow-hidden">
-            <!-- HEADER NEUF -->
+        <div class="w-full h-full bg-[#0F172A] flex flex-col relative overflow-hidden">
+            <!-- HEADER RECONSTRUIT "STITCH" -->
             <header class="praxis-header-absolute">
                 <div class="date-card" style="background:#3B82F6; color:white; padding:10px 20px; border-radius:15px; display:inline-flex; align-items:center; gap:10px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); margin: 0 0 10px 20px;">
                     <span class="material-symbols-outlined" style="font-size: 20px;">calendar_today</span>
-                    <span style="font-weight: 900; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">PLANNING DU JOUR</span>
+                    <span style="font-weight: 900; font-size: 14px; letter-spacing: 0.5px; text-transform: uppercase;">PLANNING DU JOUR — VENDREDI 27 FÉVRIER</span>
                 </div>
                 
                 <div class="tools-absolute-group">
@@ -2878,149 +2878,115 @@ function renderCleanPraxis() {
 
                     <button id="btnExportDayTop" class="tool-pill-base pdf-pill-btn">
                         <span class="material-symbols-outlined text-[#6366F1] text-[22px]">download</span>
-                        <span>PDF</span>
+                        <span>TÉLÉCHARGER</span>
                     </button>
                 </div>
                 <input type="file" id="hiddenFileInput" accept="image/*, .pdf" />
             </header>
 
-            <!-- SCROLL ZONE & TIMELINE AREA -->
+            <!-- SCROLL ZONE -->
             <div class="flex-1 overflow-y-auto w-full pb-24 no-scrollbar relative pl-[40px] pr-6 pt-4">
                 <div class="timeline-rail-clean" style="top: 48px;"></div>
                 
-                <!-- LIVE MARKER 12:52 -->
+                <!-- LIVE MARKER CALÉ SUR PAUSE DÉJ (12:05 level approx) -->
                 <div class="live-time-red-clean" style="top: 232px;">
-                    <span class="live-time-text">12:52</span>
+                    <span class="live-time-text">19:07</span>
                     <div class="live-pulse-dot"></div>
                 </div>
 
-                <!-- COURS (Styles "Stitch Premium Light") -->
                 <div class="flex flex-col gap-5 mt-2 mb-8 relative z-10 w-full">
                     
-                    <!-- MATINÉE: PASSÉ (Estompé) -->
+                    <!-- 08:10 : Français-Philo (Opacité 40%) -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">08:10</div>
-                        <div class="praxis-course-card inactive-shadow opacity-50 grayscale">
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-500">08:10</div>
+                        <div class="praxis-course-card inactive-shadow" style="opacity: 0.4;">
                             <div class="card-top-row">
                                 <div>
-                                    <h2 class="praxis-card-title text-slate-400">Français-Philo</h2>
-                                    <p class="praxis-card-info">08:10 — 10:05 | T. Payen • B204</p>
+                                    <h2 class="praxis-card-title text-slate-300">Français-Philo</h2>
+                                    <p class="praxis-card-info text-slate-400">T. Payen • Salle B204</p>
                                 </div>
                                 <span class="material-symbols-outlined card-deco-icon">menu_book</span>
                             </div>
                         </div>
                     </div>
                     
+                    <!-- 10:15 : S.I. Matin (Opacité 40%) -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">10:15</div>
-                        <div class="praxis-course-card card-si inactive-shadow opacity-50 grayscale">
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-500">10:15</div>
+                        <div class="praxis-course-card card-si inactive-shadow" style="opacity: 0.4;">
                             <div class="card-top-row">
                                 <div>
-                                    <h2 class="praxis-card-title text-slate-400">S.I. Matin</h2>
-                                    <p class="praxis-card-info">10:15 — 12:05 | Salle D022</p>
+                                    <h2 class="praxis-card-title text-slate-300">S.I. Matin</h2>
+                                    <p class="praxis-card-info text-slate-400">Salle D022</p>
                                 </div>
                                 <span class="material-symbols-outlined card-deco-icon">settings_suggest</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- PAUSE DÉJEUNER -->
+                    <!-- 12:05 : PAUSE DÉJEUNER (Pointillés) -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">12:05</div>
-                        <div class="praxis-course-card" style="background: transparent; border: 1px dashed #CBD5E1; box-shadow: none;">
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-500">12:05</div>
+                        <div class="praxis-course-card" style="background: transparent; border: 2px dashed rgba(148, 163, 184, 0.5); box-shadow: none;">
                             <div class="card-top-row">
                                 <div>
-                                    <h2 class="praxis-card-title text-slate-500" style="font-size: 14px;">Pause Déjeuner</h2>
-                                    <p class="praxis-card-info">12:05 — 13:15 | 🍴 Buffet Stratégique</p>
+                                    <h2 class="praxis-card-title text-slate-400" style="font-size: 14px;">Pause Déjeuner</h2>
+                                    <p class="praxis-card-info text-slate-500">🍴 Repos & Nutrition</p>
                                 </div>
                                 <span class="material-symbols-outlined text-slate-400 text-2xl">restaurant</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- SCIENCES DE L'INGÉNIEUR (Active Glow) -->
+                    <!-- 13:15 : TP S.I. (EN COURS + ProgressBar) -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-indigo-500">13:15</div>
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-indigo-400">13:15</div>
                         <div class="praxis-course-card card-si active-glow">
                             <div class="card-top-row">
                                 <div>
                                     <h2 class="praxis-card-title">
-                                        Sciences de l'Ingénieur
-                                        <span class="bg-indigo-glow">EN COURS</span>
+                                        TP S.I.
+                                        <span class="bg-indigo-glow" style="background: #6366F1; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-left: 8px;">EN COURS</span>
                                     </h2>
-                                    <p class="praxis-card-info">13:15 — 15:35 | Salle D022</p>
+                                    <p class="praxis-card-info">B. Ripoche • Salle D022</p>
                                 </div>
-                                <span class="material-symbols-outlined card-deco-icon">settings_suggest</span>
+                                <span class="material-symbols-outlined card-deco-icon text-indigo-400">engineering</span>
                             </div>
-                            
                             <!-- Barre de Progression -->
-                            <div class="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                <div class="h-full bg-[#6366F1] w-[45%] rounded-full shadow-[0_0_8px_rgba(99,102,241,0.6)]"></div>
+                            <div class="mt-4 h-1.5 w-full bg-slate-700/50 rounded-full overflow-hidden">
+                                <div class="h-full bg-indigo-500" style="width: 65%;"></div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- PHYSIQUE (Inactive Shadow) -->
+
+                    <!-- 15:50 : TP Physique -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">15:50</div>
-                        <div class="praxis-course-card card-physique inactive-shadow">
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-cyan-400">15:50</div>
+                        <div class="praxis-course-card" style="border-left: 4px solid #06B6D4;">
                             <div class="card-top-row">
                                 <div>
-                                    <h2 class="praxis-card-title">Physique</h2>
-                                    <p class="praxis-card-info">15:50 — 17h40 | Salle B011</p>
+                                    <h2 class="praxis-card-title">TP Physique</h2>
+                                    <p class="praxis-card-info">B. Lelu • Salle B011</p>
                                 </div>
-                                <span class="material-symbols-outlined card-deco-icon">science</span>
+                                <span class="material-symbols-outlined text-cyan-400">science</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- BARRE DE CONTRÔLE IA -->
-                    <div class="relative w-full mt-2 mb-2">
-                        <div class="absolute right-[100%] top-[12px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">18:15</div>
-                        <div class="ai-control-bar">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-slate-400 text-[18px]">tune</span>
-                                <span class="text-slate-500 font-bold text-[10px] tracking-wider uppercase">Objectif du soir</span>
-                            </div>
-                            
-                            <div class="ai-control-badge">
-                                <span>⏱️ 2h30</span>
-                            </div>
-                            
-                            <div class="ai-control-btn">
-                                <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
-                                <span>Optimiser</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- RÉVISION PERSONNELLE (Soirée Focus - Dynamic AI) -->
+
+                    <!-- 19:00 : Révision Personnelle (Indigo Gradient) -->
                     <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">19:00</div>
-                        <div class="praxis-course-card inactive-shadow" style="border-left: 4px solid #6366F1;">
+                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-indigo-300">19:00</div>
+                        <div class="praxis-course-card" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border: 1px solid rgba(99, 102, 241, 0.3);">
                             <div class="card-top-row">
                                 <div>
-                                    <h2 class="praxis-card-title text-[#000000] uppercase tracking-wide">RÉVISION PERSONNELLE</h2>
-                                    <p class="praxis-card-info">Généré selon vos objectifs</p>
+                                    <h2 class="praxis-card-title text-indigo-100">Révision Personnelle</h2>
+                                    <p class="praxis-card-info text-indigo-300">Concentration Profonde</p>
                                 </div>
-                                <span class="material-symbols-outlined card-deco-icon text-indigo-500">auto_awesome</span>
+                                <span class="material-symbols-outlined text-indigo-400">psychology</span>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- SESSION INTENSIVE (Soirée Focus - Dynamic AI) -->
-                    <div class="relative w-full">
-                        <div class="absolute right-[100%] top-[24px] w-[50px] pr-[14px] text-right text-[11px] font-bold text-slate-400">20:30</div>
-                        <div class="praxis-course-card inactive-shadow" style="border-left: 4px solid #6366F1;">
-                            <div class="card-top-row">
-                                <div>
-                                    <h2 class="praxis-card-title text-[#000000] uppercase tracking-wide">SESSION INTENSIVE</h2>
-                                    <p class="praxis-card-info">Généré selon vos objectifs</p>
-                                </div>
-                                <span class="material-symbols-outlined card-deco-icon text-indigo-500">auto_awesome</span>
-                            </div>
-                        </div>
-                    </div>
+                </div> <!-- FIN DES COURS VENDREDI -->
                 </div> <!-- FIN DES COURS VENDREDI -->
             </div>
         </div>
