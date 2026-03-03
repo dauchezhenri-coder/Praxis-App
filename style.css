@@ -108,7 +108,7 @@
 #view-planning,
 #view-bibliotheque,
 #view-settings,
-#view-classement,
+#view-leaderboard,
 #view-entrainement {
   min-height: calc(100vh - 72px);
   width: 100%;
@@ -248,11 +248,11 @@ input {
   -webkit-overflow-scrolling: touch;
 }
 
-#view-dashboard,
+#view-home,
 #view-bibliotheque,
 #view-planning,
 #view-settings,
-#view-classement,
+#view-leaderboard,
 #view-entrainement {
   padding-bottom: 120px !important;
   box-sizing: border-box;

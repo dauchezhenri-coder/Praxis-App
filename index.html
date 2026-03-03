@@ -82,8 +82,8 @@
   <!-- ===================== APP WRAPPER ===================== -->
   <div class="app-wrapper">
 
-    <!-- ==================== DASHBOARD VIEW CONTAINER ==================== -->
-    <div id="view-dashboard" class="flex-1 overflow-y-auto bg-[#0F172A] pb-32">
+    <!-- ==================== HOME VIEW CONTAINER ==================== -->
+    <div id="view-home" class="flex-1 overflow-y-auto bg-[#0F172A] pb-32">
 
       <!-- ===================== TOP BAR ===================== -->
       <header class="top-bar">
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Continue button -->
-        <button class="btn-continue" id="btnContinue">
+        <button class="btn-continue" id="btnContinue" onclick="showView('view-entrainement')">
           <div class="btn-continue__icon">▶</div>
           <div class="btn-continue__text">
             <span class="btn-continue__label">Continuer ma révision</span>
@@ -599,8 +599,151 @@
         </main>
       </div>
     </div>
-    <div id="view-classement" class="flex-1 overflow-y-auto hidden bg-[#1a1e26] pb-32"></div>
-    <div id="view-entrainement" class="flex-1 overflow-y-auto hidden bg-[#1a1e26] pb-32"></div>
+    <div id="view-leaderboard" class="flex-1 overflow-y-auto hidden bg-[#020617] pb-32">
+      <div style="padding: 60px 24px;">
+        <h1 style="color: white; font-size: 28px; font-weight: 800; margin-bottom: 32px;">Classement PTSI</h1>
+
+        <!-- Podium Stitch Style -->
+        <div
+          style="display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin-bottom: 40px; padding: 20px 0;">
+          <!-- 2nd Place -->
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <div
+              style="width: 50px; height: 50px; border-radius: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-weight: 700;">
+              AD</div>
+            <div
+              style="width: 70px; height: 80px; background: linear-gradient(to bottom, rgba(148, 163, 184, 0.2), transparent); border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 20px; font-weight: 800;">
+              2</div>
+            <span style="color: #94A3B8; font-size: 11px; font-weight: 600;">Alexandre D.</span>
+          </div>
+
+          <!-- 1st Place (Henri) -->
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <div style="position: relative;">
+              <div
+                style="width: 65px; height: 65px; border-radius: 20px; background: linear-gradient(135deg, #6366F1, #818CF8); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 800; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);">
+                HD</div>
+              <div style="position: absolute; top: -10px; right: -10px; font-size: 24px;">👑</div>
+            </div>
+            <div
+              style="width: 80px; height: 120px; background: linear-gradient(to bottom, rgba(99, 102, 241, 0.3), transparent); border-radius: 16px 16px 0 0; display: flex; align-items: center; justify-content: center; color: #818CF8; font-size: 32px; font-weight: 900;">
+              1</div>
+            <span style="color: #F8FAFC; font-size: 12px; font-weight: 700;">Henri D.</span>
+          </div>
+
+          <!-- 3rd Place -->
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <div
+              style="width: 45px; height: 45px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #64748B; font-weight: 600;">
+              ML</div>
+            <div
+              style="width: 65px; height: 60px; background: linear-gradient(to bottom, rgba(205, 127, 50, 0.15), transparent); border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; color: #CD7F32; font-size: 18px; font-weight: 700;">
+              3</div>
+            <span style="color: #64748B; font-size: 11px; font-weight: 600;">Marie L.</span>
+          </div>
+        </div>
+
+        <!-- List -->
+        <div
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; overflow: hidden;">
+          <div
+            style="padding: 16px 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <span style="color: #64748B; font-weight: 700; width: 20px;">4</span>
+            <div
+              style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 12px; font-weight: 700;">
+              TB</div>
+            <span style="flex: 1; color: #E2E8F0; font-size: 14px; font-weight: 500;">Thomas B.</span>
+            <span style="color: #6366F1; font-weight: 700; font-size: 14px;">2 450 XP</span>
+          </div>
+          <div style="padding: 16px 20px; display: flex; align-items: center; gap: 16px;">
+            <span style="color: #64748B; font-weight: 700; width: 20px;">5</span>
+            <div
+              style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 12px; font-weight: 700;">
+              SR</div>
+            <span style="flex: 1; color: #E2E8F0; font-size: 14px; font-weight: 500;">Sophie R.</span>
+            <span style="color: #6366F1; font-weight: 700; font-size: 14px;">2 100 XP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="view-entrainement" class="flex-1 overflow-y-auto hidden bg-[#020617] pb-32">
+      <!-- Header Training -->
+      <div style="padding: 40px 24px 20px; display: flex; align-items: center; gap: 16px;">
+        <button onclick="showView('view-home')"
+          style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: white;">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 style="color: white; font-size: 24px; font-weight: 800;">Entraînement</h1>
+      </div>
+
+      <div style="padding: 0 24px 40px;">
+        <p style="color: #64748B; font-size: 14px; margin-bottom: 32px;">Choisissez votre mode de révision pour
+          aujourd'hui.</p>
+
+        <!-- Grid Cards -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+
+          <!-- Flashcards -->
+          <div onclick="showToast('Mode Flashcards bientôt disponible')"
+            style="grid-column: span 2; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+            <div
+              style="width: 48px; height: 48px; border-radius: 14px; background: #6366F1; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);">
+              <span class="material-symbols-outlined">style</span>
+            </div>
+            <div>
+              <h3 style="color: white; font-weight: 700; font-size: 18px;">Flashcards</h3>
+              <p style="color: #94A3B8; font-size: 12px; line-height: 1.5; margin-top: 4px;">Répétition espacée pour
+                mémoriser les formules et définitions clés.</p>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div onclick="showToast('Mode Quiz bientôt disponible')"
+            style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; color: #4ADE80;">
+              <span class="material-symbols-outlined">quiz</span>
+            </div>
+            <h3 style="color: white; font-weight: 700; font-size: 15px;">Quiz</h3>
+            <p style="color: #64748B; font-size: 11px;">Questions rapides sur les fondamentaux.</p>
+          </div>
+
+          <!-- QCM -->
+          <div onclick="showToast('Mode QCM bientôt disponible')"
+            style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); border: 1px solid rgba(234, 179, 8, 0.3); display: flex; align-items: center; justify-content: center; color: #FACC15;">
+              <span class="material-symbols-outlined">checklist</span>
+            </div>
+            <h3 style="color: white; font-weight: 700; font-size: 15px;">QCM</h3>
+            <p style="color: #64748B; font-size: 11px;">Entraînement intensif type concours.</p>
+          </div>
+
+          <!-- Mode Examen -->
+          <div onclick="showToast('Mode Examen bientôt disponible')"
+            style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; color: #F87171;">
+              <span class="material-symbols-outlined">timer</span>
+            </div>
+            <h3 style="color: white; font-weight: 700; font-size: 15px;">Examen</h3>
+            <p style="color: #64748B; font-size: 11px;">Session chronométrée en conditions réelles.</p>
+          </div>
+
+          <!-- Démonstrations -->
+          <div onclick="showToast('Mode Démonstrations bientôt disponible')"
+            style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
+            <div
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; color: #C084FC;">
+              <span class="material-symbols-outlined">draw</span>
+            </div>
+            <h3 style="color: white; font-weight: 700; font-size: 15px;">Démos</h3>
+            <p style="color: #64748B; font-size: 11px;">Schémas et calculs types pour les colles.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
     <div id="view-settings" class="flex-1 overflow-y-auto hidden"
       style="background-color: #1A2238; color: white; padding-bottom: 120px; font-family: 'Space Grotesk', 'Inter', sans-serif;">
 
@@ -716,18 +859,18 @@
 
     <!-- ===================== BOTTOM NAV ===================== -->
     <nav class="bottom-nav">
-      <button class="nav-item" id="nav-dashboard" onclick="showView('view-dashboard')">
+      <button class="nav-item" id="nav-home" onclick="showView('view-home')">
         <div class="nav-item__icon">
           <span class="material-symbols-outlined">dashboard</span>
         </div>
         <span class="nav-item__label">Accueil</span>
         <div class="nav-item__indicator"></div>
       </button>
-      <button class="nav-item active" id="nav-bibliotheque" onclick="showView('view-bibliotheque')">
+      <button class="nav-item" id="nav-leaderboard" onclick="showView('view-leaderboard')">
         <div class="nav-item__icon">
-          <span class="material-symbols-outlined">library_books</span>
+          <span class="material-symbols-outlined">leaderboard</span>
         </div>
-        <span class="nav-item__label">Bibliothèque</span>
+        <span class="nav-item__label">Classement</span>
         <div class="nav-item__indicator"></div>
       </button>
       <button class="nav-item nav-item--highlighted" id="nav-planning" onclick="showView('view-planning')">
@@ -737,18 +880,18 @@
         <span class="nav-item__label">Planning</span>
         <div class="nav-item__indicator"></div>
       </button>
-      <button class="nav-item" id="nav-classement" onclick="showView('view-classement')">
+      <button class="nav-item" id="nav-entrainement" onclick="showView('view-entrainement')">
         <div class="nav-item__icon">
-          <span class="material-symbols-outlined">leaderboard</span>
+          <span class="material-symbols-outlined">fitness_center</span>
         </div>
-        <span class="nav-item__label">Classement</span>
+        <span class="nav-item__label">Entraînement</span>
         <div class="nav-item__indicator"></div>
       </button>
-      <button class="nav-item" id="nav-settings" onclick="showView('view-settings')">
+      <button class="nav-item" id="nav-bibliotheque" onclick="showView('view-bibliotheque')">
         <div class="nav-item__icon">
-          <span class="material-symbols-outlined">person</span>
+          <span class="material-symbols-outlined">library_books</span>
         </div>
-        <span class="nav-item__label">Profil</span>
+        <span class="nav-item__label">Bibliothèque</span>
         <div class="nav-item__indicator"></div>
       </button>
     </nav>

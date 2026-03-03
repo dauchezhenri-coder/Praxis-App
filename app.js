@@ -974,16 +974,19 @@ function navigate(pageId) {
  * Gère l'affichage des conteneurs principaux
  */
 function showView(targetId) {
-  const views = ['view-dashboard', 'view-planning', 'view-bibliotheque', 'view-classement', 'view-entrainement', 'view-settings', 'view-subject-physics'];
+  const views = ['view-home', 'view-planning', 'view-bibliotheque', 'view-leaderboard', 'view-entrainement', 'view-settings', 'view-subject-physics'];
   views.forEach(id => {
     const el = document.getElementById(id);
+    const navBtn = document.getElementById('nav-' + id.replace('view-', ''));
     if (el) {
       if (id === targetId) {
         el.classList.remove('hidden');
         el.classList.add('block');
+        if (navBtn) navBtn.classList.add('active');
       } else {
         el.classList.remove('block');
         el.classList.add('hidden');
+        if (navBtn) navBtn.classList.remove('active');
       }
     }
   });
@@ -1023,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadState();
 
   // ── Navigation default ──
-  document.getElementById('nav-dashboard')?.classList.add('active');
+  document.getElementById('nav-home')?.classList.add('active');
 
   // ── Upload zone ──
   const uploadZone = document.getElementById('uploadZone');
