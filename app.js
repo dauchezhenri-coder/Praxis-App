@@ -3262,3 +3262,59 @@ function openSubjectHub(subjectName) {
 
   showView('view-subject-hub');
 }
+
+/* ============================================================
+   PRAXIS — MODULE FLASHCARDS (Logic & Anim)
+   ============================================================ */
+
+function openFlashcards() {
+  document.getElementById('view-flashcards').classList.remove('hidden');
+  // Optionnel : Réinitialiser la carte si nécessaire
+  const card = document.getElementById('flashcard');
+  card.classList.remove('is-flipped');
+  card.style.transform = 'translateX(0) rotate(0)';
+  card.style.opacity = '1';
+}
+
+function closeRevision() {
+  document.getElementById('view-flashcards').classList.add('hidden');
+}
+
+function flipCard() {
+  const card = document.getElementById('flashcard');
+  card.classList.toggle('is-flipped');
+}
+
+function handleFeedback(type) {
+  const feedbackMsgs = {
+    'bad': '🔄 Carte recyclée en cycle court.',
+    'good': '✅ Validé. Niveau supérieur.',
+    'perfect': '🔥 Maîtrise totale ! +'
+  };
+
+  // Si showToast existe dans le global
+  if (typeof showToast === 'function') {
+    showToast(feedbackMsgs[type]);
+  } else {
+    console.log("Feedback:", feedbackMsgs[type]);
+  }
+
+  // Animation de sortie de la carte
+  const card = document.getElementById('flashcard');
+  card.style.transition = 'transform 0.5s ease-in, opacity 0.5s';
+  card.style.transform = 'translateX(500px) rotate(20deg)';
+  card.style.opacity = '0';
+
+  setTimeout(() => {
+    // Ici tu chargerais la question suivante
+    card.style.transition = 'none';
+    card.style.transform = 'translateX(-500px) rotate(-20deg)';
+    card.classList.remove('is-flipped');
+
+    setTimeout(() => {
+      card.style.transition = 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s';
+      card.style.transform = 'translateX(0) rotate(0)';
+      card.style.opacity = '1';
+    }, 50);
+  }, 400);
+}

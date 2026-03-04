@@ -55,7 +55,51 @@
         .details-trigger:focus + .details-content {
             @apply flex opacity-100 max-h-10 mt-2;
         }
-    </style>
+    /* ==========================================================================
+       6. FLASHCARDS 3D EFFECTS (ROBUST)
+       ========================================================================== */
+    .perspective-1000 { 
+        perspective: 1000px !important; 
+        -webkit-perspective: 1000px !important; 
+    }
+    
+    #flashcard {
+        position: relative;
+        width: 100%;
+        max-width: 320px;
+        aspect-ratio: 3/4;
+        cursor: pointer;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d !important;
+        -webkit-transform-style: preserve-3d !important;
+    }
+    
+    #flashcard.is-flipped {
+        transform: rotateY(180deg) !important;
+        -webkit-transform: rotateY(180deg) !important;
+    }
+    
+    .flashcard-face {
+        position: absolute !important;
+        inset: 0 !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    .flashcard-back {
+        transform: rotateY(180deg) !important;
+        -webkit-transform: rotateY(180deg) !important;
+    }
+    
+    .shadow-ios {
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+  </style>
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -1055,7 +1099,7 @@
       <main class="px-6 py-4 pb-32" style="padding-bottom: 128px;">
         <div style="display: flex; gap: 12px; margin-bottom: 24px; width: 100%;">
           <!-- Card: Flashcards -->
-          <button class="glass-card ios-shadow transition-transform active:scale-95"
+          <button onclick="openFlashcards()" class="glass-card ios-shadow transition-transform active:scale-95"
             style="flex: 1; border-bottom: 4px solid rgba(99, 102, 241, 0.4); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; cursor: pointer;">
             <div class="rounded-xl flex items-center justify-center mb-2"
               style="width: 32px; height: 32px; background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center;">
@@ -1148,6 +1192,82 @@
   </div>
 
   <script src="app.js"></script>
+  <!-- ===================== INTERFACE DE RÉVISION : FLASHCARDS ===================== -->
+  <div id="view-flashcards" class="fixed inset-0 z-[150] bg-[#020617] flex flex-col p-6 hidden">
+
+    <!-- Header & Progress -->
+    <div class="flex flex-col gap-4 mb-8 mt-4">
+      <div class="flex items-center justify-between">
+        <button onclick="closeRevision()" class="text-slate-500 hover:text-white transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        <span id="flashcard-subject-tag" class="text-[10px] font-black text-indigo-400 uppercase tracking-widest">S.I. •
+          Cinématique</span>
+        <div class="w-8"></div> <!-- Spacer -->
+      </div>
+      <!-- Progress Bar -->
+      <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+        <div id="revision-progress"
+          class="h-full bg-indigo-500 w-[35%] transition-all duration-700 shadow-[0_0_15px_rgba(99,102,241,0.5)]"></div>
+      </div>
+    </div>
+
+    <!-- Central Flashcard Area -->
+    <div class="flex-1 flex items-center justify-center perspective-1000">
+      <div id="flashcard" onclick="flipCard()"
+        class="relative w-full max-w-[320px] aspect-[3/4] cursor-pointer transition-transform duration-700 transform-style-3d shadow-2xl">
+
+        <!-- RECTO : La Question -->
+        <div class="flashcard-face bg-white/5 backdrop-blur-xl border border-white/10 rounded-[40px] p-10 shadow-ios">
+          <span class="text-[10px] font-bold text-slate-500 uppercase tracking-[4px] mb-6">Question</span>
+          <h2 class="text-2xl font-black text-white leading-snug">Définir le vecteur vitesse instantanée d'un point M.
+          </h2>
+          <div class="mt-12 text-indigo-400/40">
+            <span class="material-symbols-outlined text-4xl animate-pulse">touch_app</span>
+          </div>
+        </div>
+
+        <!-- VERSO : La Réponse -->
+        <div
+          class="flashcard-face flashcard-back bg-white/10 backdrop-blur-2xl border border-indigo-500/20 rounded-[40px] p-10 shadow-indigo-500/10 shadow-2xl">
+          <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-[4px] mb-6">Réponse</span>
+          <p class="text-lg font-medium text-slate-200 leading-relaxed">
+            v(M, t) = [ dOM / dt ]<sub>R</sub> <br><br>
+            C'est la dérivée du vecteur position par rapport au temps dans le référentiel R.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Feedback Actions -->
+    <div class="grid grid-cols-3 gap-4 mt-8 mb-4">
+      <button onclick="handleFeedback('bad')" class="flex flex-col items-center gap-2 group">
+        <div
+          class="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 group-hover:bg-red-500/20 transition-all">
+          <span class="material-symbols-outlined">restart_alt</span>
+        </div>
+        <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">À revoir</span>
+      </button>
+
+      <button onclick="handleFeedback('good')" class="flex flex-col items-center gap-2 group">
+        <div
+          class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-500/20 transition-all">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">Correct</span>
+      </button>
+
+      <button onclick="handleFeedback('perfect')" class="flex flex-col items-center gap-2 group">
+        <div
+          class="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500/20 transition-all shadow-lg shadow-emerald-500/5">
+          <span class="material-symbols-outlined">verified</span>
+        </div>
+        <span class="text-[9px] font-black text-slate-500 uppercase tracking-tighter">Maîtrisé</span>
+      </button>
+    </div>
+
+  </div>
 </body>
 
 </html>
