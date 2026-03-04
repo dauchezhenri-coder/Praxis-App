@@ -305,7 +305,7 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px 32px;">
 
         <!-- Mathématiques -->
-        <div onclick="showView('view-subject-maths')"
+        <div onclick="openSubjectHub('Mathématiques')"
           style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
           <div
             style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
@@ -324,7 +324,7 @@
         </div>
 
         <!-- Physique-Chimie -->
-        <div onclick="showView('view-subject-physics')"
+        <div onclick="openSubjectHub('Physique-Chimie')"
           style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
           <div
             style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
@@ -343,8 +343,8 @@
         </div>
 
         <!-- S.I. -->
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+        <div onclick="openSubjectHub('S.I.')"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
           <div
             style="width: 48px; height: 48px; border-radius: 14px; background: rgba(129,140,248,0.2); display: flex; align-items: center; justify-content: center;">
             <span class="material-symbols-outlined" style="color: #818CF8;">tune</span>
@@ -362,8 +362,8 @@
         </div>
 
         <!-- Français-Philo -->
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+        <div onclick="openSubjectHub('Français-Philo')"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
           <div
             style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
             <span class="material-symbols-outlined" style="color: #818CF8;">menu_book</span>
@@ -381,8 +381,8 @@
         </div>
 
         <!-- Anglais -->
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between;">
+        <div onclick="openSubjectHub('Anglais')"
+          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
           <div
             style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
             <span class="material-symbols-outlined" style="color: #10B981;">language</span>
@@ -400,13 +400,51 @@
         </div>
 
         <!-- Ajouter -->
-        <div
-          style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 28px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0.4; cursor: pointer;">
+        <div onclick="toggleChapterModal()"
+          style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 28px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0.6; cursor: pointer;">
           <span class="material-symbols-outlined" style="font-size: 32px;">add_circle</span>
           <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: 2px;">
             AJOUTER</p>
         </div>
 
+      </div>
+
+      <!-- ===================== LISTE DES CHAPITRES (Vue Matière) ===================== -->
+      <div id="view-chapters" class="hidden" style="margin-top: 32px; padding: 0 24px;">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+          <button onclick="showLibraryGrid()"
+            style="background: rgba(255,255,255,0.05); border: none; padding: 10px; border-radius: 14px; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+            <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+          </button>
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900; color: white; letter-spacing: -0.5px; margin: 0;">S.I.</h2>
+            <p
+              style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin: 2px 0 0;">
+              Chapitres</p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Chapitre 1 -->
+          <div
+            style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+              <div>
+                <h4 style="font-size: 15px; font-weight: 700; color: white; margin: 0;">Cinématique du solide</h4>
+                <p
+                  style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; margin: 4px 0 0;">
+                  12 Flashcards • 2 Fiches</p>
+              </div>
+              <div
+                style="background: rgba(99, 102, 241, 0.1); color: #818CF8; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                65%</div>
+            </div>
+            <div
+              style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
+              <div style="width: 65%; height: 100%; background: #6366F1;"></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Activités Récentes -->
@@ -985,6 +1023,127 @@
       <p>Préparez-vous pour la prochaine étape de votre planning.</p>
       <div class="focus-timer" id="focusTimerDisplay">60:00</div>
       <button class="btn btn--secondary mt-xl" onclick="deactivateFocusMode()">Quitter le Focus</button>
+    </div>
+  </div>
+
+  <!-- ===================== VUE : SUBJECT HUB (PHYSIQUE) ===================== -->
+  <div id="view-subject-hub" class="hidden"
+    style="height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: var(--midnight); z-index: 50; overflow-y: auto;">
+    <div class="max-w-[430px] mx-auto min-h-screen relative">
+      <header class="pt-8 px-6 pb-6 bg-gradient-to-b from-black/20 to-transparent">
+        <div class="flex items-center justify-between mb-8">
+          <button onclick="showView('view-bibliotheque')"
+            class="flex items-center gap-2 text-primary font-semibold hover:opacity-70 transition-opacity"
+            style="background:none; border:none; cursor:pointer; color:#6366F1;">
+            <span class="material-symbols-outlined text-[20px] font-bold">arrow_back_ios</span>
+            <span class="text-sm">Retour</span>
+          </button>
+          <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-gold-accent" style="color:#F59E0B;">stars</span>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-8 bg-primary rounded-full" style="background:#6366F1;"></div>
+            <h1 id="hub-title" class="text-3xl font-bold tracking-tight" style="color:white; margin:0;">Physique</h1>
+          </div>
+          <p id="hub-subtitle" class="text-slate-400 text-sm ml-4" style="color:#94A3B8;">MPSI • 12 chapitres complétés
+          </p>
+        </div>
+      </header>
+
+      <main class="px-6 py-4 pb-32" style="padding-bottom: 128px;">
+        <div style="display: flex; gap: 12px; margin-bottom: 24px; width: 100%;">
+          <!-- Card: Flashcards -->
+          <button class="glass-card ios-shadow transition-transform active:scale-95"
+            style="flex: 1; border-bottom: 4px solid rgba(99, 102, 241, 0.4); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; cursor: pointer;">
+            <div class="rounded-xl flex items-center justify-center mb-2"
+              style="width: 32px; height: 32px; background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined text-primary" style="font-size: 20px; color:#6366F1;">style</span>
+            </div>
+            <div class="text-center">
+              <h2 class="font-bold leading-tight" style="color:white; font-size: 14px; margin: 0;">Flashcards</h2>
+              <p class="text-[8px] text-slate-400 uppercase tracking-wider font-semibold"
+                style="font-size: 8px; color: #94A3B8; text-transform: uppercase;">124 Items</p>
+            </div>
+          </button>
+
+          <!-- Card: Fiches -->
+          <button class="glass-card ios-shadow transition-transform active:scale-95"
+            style="flex: 1; border-bottom: 4px solid rgba(245, 158, 11, 0.4); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; cursor: pointer;">
+            <div class="rounded-xl flex items-center justify-center mb-2"
+              style="width: 32px; height: 32px; background: rgba(245, 158, 11, 0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined text-gold-accent"
+                style="font-size: 20px; color:#F59E0B;">description</span>
+            </div>
+            <div class="text-center">
+              <h2 class="font-bold leading-tight" style="color:white; font-size: 14px; margin: 0;">Mes Fiches</h2>
+              <p class="text-[8px] text-slate-400 uppercase tracking-wider font-semibold"
+                style="font-size: 8px; color: #94A3B8; text-transform: uppercase;">18 Fiches</p>
+            </div>
+          </button>
+        </div>
+
+        <section class="mt-8 space-y-4" style="margin-top: 32px;">
+          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest px-2"
+            style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">
+            Ressources du Chapitre</h3>
+
+          <div class="glass-card rounded-2xl p-4 flex items-center gap-4"
+            style="border-left: 4px solid #10B981; border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
+            <div class="w-10 h-10 rounded-xl bg-emerald-accent/10 flex items-center justify-center"
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined text-emerald-accent" style="color:#10B981;">quiz</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-bold" style="color:white; margin:0; font-size: 14px;">Quiz d'entraînement</p>
+              <p class="text-xs text-slate-400" style="color:#94A3B8; margin:2px 0 0; font-size: 11px;">Prêt pour le
+                prochain DS</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-600" style="color:#475569;">chevron_right</span>
+          </div>
+
+          <div class="glass-card rounded-2xl p-4 flex items-center gap-4"
+            style="border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px;">
+            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center"
+              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined text-slate-400" style="color:#94A3B8;">analytics</span>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-bold" style="color:white; margin:0; font-size: 14px;">Analytiques détaillées</p>
+              <p class="text-xs text-slate-400" style="color:#94A3B8; margin:2px 0 0; font-size: 11px;">Identifiez vos
+                points faibles</p>
+            </div>
+            <span class="material-symbols-outlined text-slate-600" style="color:#475569;">chevron_right</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL : AJOUTER CHAPITRE ===================== -->
+  <div id="modal-add-chapter" class="hidden"
+    style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    <!-- Overlay sombre -->
+    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);"
+      onclick="toggleChapterModal()"></div>
+
+    <!-- Contenu du Modal -->
+    <div
+      style="position: relative; background: #1E293B; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 360px; border-radius: 32px; padding: 32px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+      <h3 style="font-size: 20px; font-weight: 900; color: white; margin: 0 0 8px;">Nouveau Chapitre</h3>
+      <p style="font-size: 11px; color: #94A3B8; font-weight: 500; margin: 0 0 24px; line-height: 1.5;">Entre le nom du
+        chapitre pour commencer l'organisation IA.</p>
+
+      <input type="text" id="chapter-input" placeholder="Ex: Cinématique du solide"
+        style="width: 100%; background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 16px; font-size: 14px; color: white; outline: none; margin-bottom: 24px;">
+
+      <div style="display: flex; gap: 12px;">
+        <button onclick="toggleChapterModal()"
+          style="flex: 1; padding: 14px; border-radius: 16px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #94A3B8; background: rgba(255,255,255,0.05); border: none; cursor: pointer;">Annuler</button>
+        <button onclick="saveChapter()"
+          style="flex: 1; padding: 14px; background: #6366F1; border-radius: 16px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: white; border: none; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);">Créer</button>
+      </div>
     </div>
   </div>
 

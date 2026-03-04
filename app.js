@@ -974,7 +974,7 @@ function navigate(pageId) {
  * Gère l'affichage des conteneurs principaux
  */
 function showView(targetId) {
-  const views = ['view-home', 'view-planning', 'view-bibliotheque', 'view-leaderboard', 'view-entrainement', 'view-settings', 'view-subject-physics'];
+  const views = ['view-home', 'view-planning', 'view-bibliotheque', 'view-leaderboard', 'view-entrainement', 'view-settings', 'view-subject-physics', 'view-subject-hub'];
   views.forEach(id => {
     const el = document.getElementById(id);
     const navBtn = document.getElementById('nav-' + id.replace('view-', ''));
@@ -3191,4 +3191,74 @@ function toggleDSDetails() {
   if (tooltip.classList.contains('visible')) {
     showToast("📍 Infos DS : Salle commune");
   }
+}
+
+// ===================== DYNAMIC LIBRARY MODULE =====================
+
+function toggleChapterModal() {
+  const modal = document.getElementById('modal-add-chapter');
+  if (!modal) return;
+  modal.classList.toggle('hidden');
+  if (!modal.classList.contains('hidden')) {
+    const input = document.getElementById('chapter-input');
+    if (input) input.focus();
+  }
+}
+
+function saveChapter() {
+  const input = document.getElementById('chapter-input');
+  if (!input) return;
+  const name = input.value.trim();
+  if (name) {
+    if (typeof showToast === 'function') {
+      showToast(`✅ Chapitre "${name}" créé dans S.I.`);
+    } else {
+      alert(`✅ Chapitre "${name}" créé dans S.I.`);
+    }
+    toggleChapterModal();
+    input.value = '';
+  }
+}
+
+// Pour simuler l'ouverture d'une matière (ex: S.I.)
+function openSubject(subjectName) {
+  // Cache la grille des matières dans la bibliothèque
+  // La grille est le deuxième div direct de #view-bibliotheque (après le header)
+  const libGrid = document.querySelector('#view-bibliotheque > div:nth-of-type(2)');
+  if (libGrid) libGrid.classList.add('hidden');
+
+  // Montre les chapitres
+  const chaptersView = document.getElementById('view-chapters');
+  if (chaptersView) chaptersView.classList.remove('hidden');
+}
+
+function showLibraryGrid() {
+  const libGrid = document.querySelector('#view-bibliotheque > div:nth-of-type(2)');
+  if (libGrid) libGrid.classList.remove('hidden');
+
+  const chaptersView = document.getElementById('view-chapters');
+  if (chaptersView) chaptersView.classList.add('hidden');
+}
+
+/**
+ * Ouvre le Subject Hub avec un titre dynamique
+ */
+function openSubjectHub(subjectName) {
+  const title = document.getElementById('hub-title');
+  const subtitle = document.getElementById('hub-subtitle');
+
+  if (title) title.textContent = subjectName;
+  if (subtitle) {
+    // Simulation de données dynamiques selon la matière
+    const stats = {
+      'Mathématiques': 'MP* • 24 chapitres complétés',
+      'Physique-Chimie': 'MPSI • 12 chapitres complétés',
+      'S.I.': 'PTSI • 8 chapitres complétés',
+      'Français-Philo': 'CPGE • 4 thèmes étudiés',
+      'Anglais': 'TOEIC Prep • 1500 mots maîtrisés'
+    };
+    subtitle.textContent = stats[subjectName] || 'Matière CPGE';
+  }
+
+  showView('view-subject-hub');
 }
