@@ -681,69 +681,136 @@
         </main>
       </div>
     </div>
-    <div id="view-leaderboard" class="flex-1 overflow-y-auto hidden bg-[#020617] pb-32">
-      <div style="padding: 60px 24px;">
-        <h1 style="color: white; font-size: 28px; font-weight: 800; margin-bottom: 32px;">Classement PTSI</h1>
+    <div id="view-leaderboard" class="flex-1 overflow-y-auto hidden bg-[#0F172A] pb-32">
+      <!-- Centering Mobile Container -->
+      <div class="max-w-[430px] mx-auto min-h-screen relative p-6">
 
-        <!-- Podium Stitch Style -->
-        <div
-          style="display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin-bottom: 40px; padding: 20px 0;">
-          <!-- 2nd Place -->
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div
-              style="width: 50px; height: 50px; border-radius: 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-weight: 700;">
-              AD</div>
-            <div
-              style="width: 70px; height: 80px; background: linear-gradient(to bottom, rgba(148, 163, 184, 0.2), transparent); border-radius: 12px 12px 0 0; display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 20px; font-weight: 800;">
-              2</div>
-            <span style="color: #94A3B8; font-size: 11px; font-weight: 600;">Alexandre D.</span>
-          </div>
-
-          <!-- 1st Place (Henri) -->
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div style="position: relative;">
-              <div
-                style="width: 65px; height: 65px; border-radius: 20px; background: linear-gradient(135deg, #6366F1, #818CF8); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 800; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);">
-                HD</div>
-              <div style="position: absolute; top: -10px; right: -10px; font-size: 24px;">👑</div>
-            </div>
-            <div
-              style="width: 80px; height: 120px; background: linear-gradient(to bottom, rgba(99, 102, 241, 0.3), transparent); border-radius: 16px 16px 0 0; display: flex; align-items: center; justify-content: center; color: #818CF8; font-size: 32px; font-weight: 900;">
-              1</div>
-            <span style="color: #F8FAFC; font-size: 12px; font-weight: 700;">Henri D.</span>
-          </div>
-
-          <!-- 3rd Place -->
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
-            <div
-              style="width: 45px; height: 45px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #64748B; font-weight: 600;">
-              ML</div>
-            <div
-              style="width: 65px; height: 60px; background: linear-gradient(to bottom, rgba(205, 127, 50, 0.15), transparent); border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; color: #CD7F32; font-size: 18px; font-weight: 700;">
-              3</div>
-            <span style="color: #64748B; font-size: 11px; font-weight: 600;">Marie L.</span>
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 mt-4">
+          <h1 class="text-2xl font-black tracking-tight text-white">Classement</h1>
+          <div class="flex gap-4">
+            <span class="material-symbols-outlined text-slate-500 text-xl cursor-pointer">search</span>
+            <span class="material-symbols-outlined text-amber-500 text-xl">emoji_events</span>
           </div>
         </div>
 
-        <!-- List -->
-        <div
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; overflow: hidden;">
-          <div
-            style="padding: 16px 20px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-            <span style="color: #64748B; font-weight: 700; width: 20px;">4</span>
-            <div
-              style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 12px; font-weight: 700;">
-              TB</div>
-            <span style="flex: 1; color: #E2E8F0; font-size: 14px; font-weight: 500;">Thomas B.</span>
-            <span style="color: #6366F1; font-weight: 700; font-size: 14px;">2 450 XP</span>
+        <!-- TABS : PORTÉE (Établissement, Ville, National) -->
+        <div class="flex bg-slate-900/60 p-1 rounded-xl mb-4 border border-white/5">
+          <button onclick="setScope('ecole')" id="tab-ecole"
+            class="flex-1 py-2 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all bg-indigo-600 text-white shadow-lg">Établissement</button>
+          <button onclick="setScope('ville')" id="tab-ville"
+            class="flex-1 py-2 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all text-slate-500">Ville</button>
+          <button onclick="setScope('national')" id="tab-national"
+            class="flex-1 py-2 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all text-slate-500">National</button>
+        </div>
+
+        <!-- FILTRES DE CRITÈRE (XP vs TEMPS) -->
+        <div class="flex items-center justify-center gap-6 mb-8 py-2 border-b border-white/5">
+          <button onclick="setCriterion('xp')" id="crit-xp" class="flex items-center gap-2 text-indigo-400">
+            <span class="material-symbols-outlined text-sm font-variation-fill">stars</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">XP</span>
+          </button>
+          <button onclick="setCriterion('time')" id="crit-time"
+            class="flex items-center gap-2 text-slate-500 opacity-60 hover:opacity-100 transition-all">
+            <span class="material-symbols-outlined text-sm">schedule</span>
+            <span class="text-[10px] font-black uppercase tracking-tighter">Temps</span>
+          </button>
+        </div>
+
+        <!-- PODIUM AREA -->
+        <div class="flex justify-around items-end mb-12 px-2">
+          <!-- 2nd Place -->
+          <div class="flex flex-col items-center gap-2">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-full border-2 border-slate-400 p-1">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Camille" class="rounded-full bg-slate-800">
+              </div>
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-slate-400 text-[#0F172A] text-[10px] font-black px-2 py-0.5 rounded-full">
+                2</div>
+            </div>
+            <span class="text-xs font-bold text-white">Camille M.</span>
+            <span class="row-unit text-[10px] text-slate-400" data-xp="3 980 XP" data-time="32h 10m">3 980 XP</span>
           </div>
-          <div style="padding: 16px 20px; display: flex; align-items: center; gap: 16px;">
-            <span style="color: #64748B; font-weight: 700; width: 20px;">5</span>
-            <div
-              style="width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #94A3B8; font-size: 12px; font-weight: 700;">
-              SR</div>
-            <span style="flex: 1; color: #E2E8F0; font-size: 14px; font-weight: 500;">Sophie R.</span>
-            <span style="color: #6366F1; font-weight: 700; font-size: 14px;">2 100 XP</span>
+
+          <!-- 1st Place -->
+          <div class="flex flex-col items-center gap-2 scale-110">
+            <div class="relative">
+              <div class="w-20 h-20 rounded-full border-2 border-amber-500 p-1 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Thomas" class="rounded-full bg-slate-800">
+              </div>
+              <div class="absolute -top-4 left-1/2 -translate-x-1/2 text-2xl">👑</div>
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-amber-500 text-[#0F172A] text-[10px] font-black px-2 py-0.5 rounded-full">
+                1</div>
+            </div>
+            <span class="text-sm font-black text-white">Thomas L.</span>
+            <span class="row-unit text-[10px] text-amber-500 font-bold" data-xp="4 210 XP" data-time="45h 05m">4 210
+              XP</span>
+          </div>
+
+          <!-- 3rd Place -->
+          <div class="flex flex-col items-center gap-2">
+            <div class="relative">
+              <div class="w-16 h-16 rounded-full border-2 border-orange-700 p-1">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lucas" class="rounded-full bg-slate-800">
+              </div>
+              <div
+                class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-orange-700 text-white text-[10px] font-black px-2 py-0.5 rounded-full">
+                3</div>
+            </div>
+            <span class="text-xs font-bold text-white">Lucas R.</span>
+            <span class="row-unit text-[10px] text-slate-400" data-xp="3 750 XP" data-time="28h 50m">3 750 XP</span>
+          </div>
+        </div>
+
+        <!-- LEADERBOARD LIST -->
+        <div class="flex flex-col gap-3">
+          <!-- User Highlighted Row -->
+          <div
+            class="bg-indigo-600 border border-indigo-400/50 p-4 rounded-2xl flex items-center justify-between shadow-[0_10px_20px_rgba(79,70,229,0.2)]">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-black w-4 text-white">12</span>
+              <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-white">HA
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-sm font-black text-white">Henri A. <span
+                      class="text-[9px] opacity-70 ml-1">(Toi)</span></h4>
+                  <span
+                    class="text-[8px] font-bold border border-white/30 px-1.5 py-0.5 rounded text-white uppercase opacity-80">PTSI</span>
+                </div>
+                <p id="leaderboard-unit" class="row-unit text-[10px] font-medium text-indigo-100"
+                  data-xp="6 630 XP • 14j 🔥" data-time="42h 15m de révision">6 630 XP • 14j 🔥</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 bg-black/20 px-2 py-1 rounded-lg">
+              <span class="text-[10px] font-black text-white">14j</span>
+              <span class="text-xs">🔥</span>
+            </div>
+          </div>
+
+          <!-- Regular Row -->
+          <div class="bg-white/5 border border-white/5 p-4 rounded-2xl flex items-center justify-between opacity-80">
+            <div class="flex items-center gap-4">
+              <span class="text-sm font-bold text-slate-500 w-4">13</span>
+              <div class="w-10 h-10 rounded-full bg-slate-800">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="rounded-full">
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-sm font-bold text-white">Sarah K.</h4>
+                  <span
+                    class="text-[8px] font-bold border border-white/10 px-1.5 py-0.5 rounded text-slate-500 uppercase">PTSI</span>
+                </div>
+                <p class="row-unit text-[10px] font-medium text-slate-500" data-xp="2 710 XP • 8j 🔥"
+                  data-time="38h 20m de révision">2 710 XP • 8j 🔥</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1 px-2 py-1">
+              <span class="text-[10px] font-black text-slate-500">8j</span>
+              <span class="text-xs grayscale">🔥</span>
+            </div>
           </div>
         </div>
       </div>

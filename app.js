@@ -3318,3 +3318,77 @@ function handleFeedback(type) {
     }, 50);
   }, 400);
 }
+
+/* ============================================================
+   LEADERBOARD : SCOPE & CRITERION SWITCHING (CPGE Refined)
+   ============================================================ */
+
+let currentCriterion = 'xp';
+
+function setCriterion(type) {
+  currentCriterion = type;
+
+  // Mise à jour visuelle des boutons
+  const btnXp = document.getElementById('crit-xp');
+  const btnTime = document.getElementById('crit-time');
+
+  if (type === 'xp') {
+    btnXp.classList.remove('text-slate-500', 'opacity-60');
+    btnXp.classList.add('text-indigo-400');
+    btnXp.querySelector('span').classList.add('font-variation-fill');
+
+    btnTime.classList.remove('text-indigo-400');
+    btnTime.classList.add('text-slate-500', 'opacity-60');
+    btnTime.querySelector('span').classList.remove('font-variation-fill');
+
+    updateLeaderboard('xp');
+  } else {
+    btnTime.classList.remove('text-slate-500', 'opacity-60');
+    btnTime.classList.add('text-indigo-400');
+    btnTime.querySelector('span').classList.add('font-variation-fill');
+
+    btnXp.classList.remove('text-indigo-400');
+    btnXp.classList.add('text-slate-500', 'opacity-60');
+    btnXp.querySelector('span').classList.remove('font-variation-fill');
+
+    updateLeaderboard('time');
+  }
+}
+
+function updateLeaderboard(type) {
+  const units = document.querySelectorAll('.row-unit');
+  units.forEach(el => {
+    if (type === 'xp') {
+      const xpVal = el.getAttribute('data-xp');
+      if (xpVal) el.textContent = xpVal;
+    } else {
+      const timeVal = el.getAttribute('data-time');
+      if (timeVal) el.textContent = timeVal;
+    }
+  });
+
+  if (type === 'xp') {
+    showToast("✨ Classement par performance (XP)");
+  } else {
+    showToast("⏱️ Classement par temps de travail");
+  }
+}
+
+function setScope(scope) {
+  // Mise à jour visuelle des onglets
+  const scopes = ['ecole', 'ville', 'national'];
+  scopes.forEach(s => {
+    const el = document.getElementById(`tab-${s}`);
+    if (!el) return;
+    if (s === scope) {
+      el.classList.add('bg-indigo-600', 'text-white', 'shadow-lg');
+      el.classList.remove('text-slate-500');
+    } else {
+      el.classList.remove('bg-indigo-600', 'text-white', 'shadow-lg');
+      el.classList.add('text-slate-500');
+    }
+  });
+
+  const scopeNames = { 'ecole': 'Établissement', 'ville': 'Ville', 'national': 'National' };
+  showToast(`📍 Scope changé : ${scopeNames[scope]}`);
+}
