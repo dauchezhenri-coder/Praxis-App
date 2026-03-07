@@ -326,192 +326,161 @@
 
     <!-- ==================== BIBLIOTHÈQUE PAGE ==================== -->
     <div id="view-bibliotheque" class="flex-1 overflow-y-auto hidden"
-      style="background-color: #1A2238; color: white; padding-bottom: 120px; font-family: 'Inter', sans-serif;">
+      style="background-color: #0F172A; color: white; padding-bottom: 120px; font-family: 'Inter', sans-serif;">
 
-      <!-- Header -->
+      <!-- HEADER & SEARCH -->
       <header style="padding: 60px 24px 20px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h1 style="font-size: 32px; font-weight: 800; margin: 0;">Ma Bibliothèque</h1>
+          <h1 style="font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.025em;">Ma Bibliothèque</h1>
           <div
-            style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1);">
-            <span class="material-symbols-outlined" style="color: #F59E0B;">workspace_premium</span>
+            style="width: 32px; height: 32px; border-radius: 8px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(99,102,241,0.2);">
+            <span class="material-symbols-outlined" style="font-size: 18px; color: #818CF8;">grid_view</span>
           </div>
         </div>
+        <!-- Search Bar -->
         <div
           style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 14px; display: flex; align-items: center; gap: 12px;">
           <span class="material-symbols-outlined" style="color: #64748B;">search</span>
-          <input type="text" placeholder="Rechercher un sujet..."
+          <input type="text" id="library-search" placeholder="Filtrer chapitres ou fichiers..."
+            oninput="filterLibrary()"
             style="background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 14px; font-family: inherit;">
         </div>
       </header>
 
-      <!-- Grille des matières — 2 colonnes forcées en inline -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 0 24px 32px;">
+      <!-- CONTENT ZONE -->
+      <div style="padding: 0 24px;">
 
-        <!-- Mathématiques -->
-        <div onclick="openSubjectHub('Mathématiques')"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="color: #818CF8;">architecture</span>
-          </div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Mathématiques</h2>
-            <p
-              style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
-              248 ITEMS</p>
-          </div>
-          <div
-            style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
-            <span style="font-size: 11px; color: #10B981; font-weight: 800;">82%</span>
-          </div>
-        </div>
+        <!-- GRILLE DES MATIÈRES (2 colonnes) -->
+        <div id="library-subjects-grid"
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px;">
 
-        <!-- Physique-Chimie -->
-        <div onclick="openSubjectHub('Physique-Chimie')"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="color: #10B981;">insights</span>
-          </div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Physique-Chimie</h2>
-            <p
-              style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
-              192 ITEMS</p>
-          </div>
-          <div
-            style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
-            <span style="font-size: 11px; color: #10B981; font-weight: 800;">74%</span>
-          </div>
-        </div>
-
-        <!-- S.I. -->
-        <div onclick="openSubjectHub('S.I.')"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 14px; background: rgba(129,140,248,0.2); display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="color: #818CF8;">tune</span>
-          </div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 700; margin: 0;">S.I.</h2>
-            <p
-              style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
-              86 ITEMS</p>
-          </div>
-          <div
-            style="padding: 4px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; width: fit-content;">
-            <span style="font-size: 11px; color: #94A3B8; font-weight: 800;">45%</span>
-          </div>
-        </div>
-
-        <!-- Français-Philo -->
-        <div onclick="openSubjectHub('Français-Philo')"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="color: #818CF8;">menu_book</span>
-          </div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Français-Philo</h2>
-            <p
-              style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
-              42 ITEMS</p>
-          </div>
-          <div
-            style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
-            <span style="font-size: 11px; color: #10B981; font-weight: 800;">91%</span>
-          </div>
-        </div>
-
-        <!-- Anglais -->
-        <div onclick="openSubjectHub('Anglais')"
-          style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
-          <div
-            style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="color: #10B981;">language</span>
-          </div>
-          <div>
-            <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Anglais</h2>
-            <p
-              style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
-              112 ITEMS</p>
-          </div>
-          <div
-            style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
-            <span style="font-size: 11px; color: #10B981; font-weight: 800;">88%</span>
-          </div>
-        </div>
-
-        <!-- Ajouter -->
-        <div onclick="toggleChapterModal()"
-          style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 28px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0.6; cursor: pointer;">
-          <span class="material-symbols-outlined" style="font-size: 32px;">add_circle</span>
-          <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: 2px;">
-            AJOUTER</p>
-        </div>
-
-      </div>
-
-      <!-- ===================== LISTE DES CHAPITRES (Vue Matière) ===================== -->
-      <div id="view-chapters" class="hidden" style="margin-top: 32px; padding: 0 24px;">
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
-          <button onclick="showLibraryGrid()"
-            style="background: rgba(255,255,255,0.05); border: none; padding: 10px; border-radius: 14px; color: #94A3B8; cursor: pointer; display: flex; align-items: center; justify-content: center;">
-            <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
-          </button>
-          <div>
-            <h2 style="font-size: 22px; font-weight: 900; color: white; letter-spacing: -0.5px; margin: 0;">S.I.</h2>
-            <p
-              style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin: 2px 0 0;">
-              Chapitres</p>
-          </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          <!-- Chapitre 1 -->
-          <div
-            style="background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-              <div>
-                <h4 style="font-size: 15px; font-weight: 700; color: white; margin: 0;">Cinématique du solide</h4>
-                <p
-                  style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; margin: 4px 0 0;">
-                  12 Flashcards • 2 Fiches</p>
-              </div>
-              <div
-                style="background: rgba(99, 102, 241, 0.1); color: #818CF8; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(99, 102, 241, 0.2);">
-                65%</div>
-            </div>
+          <!-- Mathématiques -->
+          <div onclick="openSubjectHub('Mathématiques')" class="lib-subject-card"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
             <div
-              style="width: 100%; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden;">
-              <div style="width: 65%; height: 100%; background: #6366F1;"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Activités Récentes -->
-      <div style="padding: 0 24px 32px;">
-        <h4
-          style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 16px;">
-          Activités Récentes</h4>
-        <div
-          style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 14px;">
-            <div
-              style="width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 8px rgba(16,185,129,0.6);">
+              style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #818CF8;">architecture</span>
             </div>
             <div>
-              <h5 style="font-size: 13px; font-weight: 700; margin: 0;">Flashcards : Electromagnétisme</h5>
-              <p style="font-size: 10px; color: #64748B; margin: 3px 0 0;">Il y a 2 heures • Physique</p>
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Mathématiques</h2>
+              <p
+                style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
+                248 ITEMS</p>
+            </div>
+            <div
+              style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
+              <span style="font-size: 11px; color: #10B981; font-weight: 800;">82%</span>
             </div>
           </div>
-          <span class="material-symbols-outlined" style="color: #475569; font-size: 20px;">chevron_right</span>
-        </div>
-      </div>
 
-    </div>
+          <!-- Physique-Chimie -->
+          <div onclick="openSubjectHub('Physique-Chimie')" class="lib-subject-card"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
+            <div
+              style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #10B981;">insights</span>
+            </div>
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Physique-Chimie</h2>
+              <p
+                style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
+                192 ITEMS</p>
+            </div>
+            <div
+              style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
+              <span style="font-size: 11px; color: #10B981; font-weight: 800;">74%</span>
+            </div>
+          </div>
+
+          <!-- S.I. -->
+          <div onclick="openSubjectHub('S.I.')" class="lib-subject-card"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
+            <div
+              style="width: 48px; height: 48px; border-radius: 14px; background: rgba(129,140,248,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #818CF8;">tune</span>
+            </div>
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0;">S.I.</h2>
+              <p
+                style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
+                86 ITEMS</p>
+            </div>
+            <div
+              style="padding: 4px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; width: fit-content;">
+              <span style="font-size: 11px; color: #94A3B8; font-weight: 800;">45%</span>
+            </div>
+          </div>
+
+          <!-- Français-Philo -->
+          <div onclick="openSubjectHub('Français-Philo')" class="lib-subject-card"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
+            <div
+              style="width: 48px; height: 48px; border-radius: 14px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #818CF8;">menu_book</span>
+            </div>
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Français-Philo</h2>
+              <p
+                style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
+                42 ITEMS</p>
+            </div>
+            <div
+              style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
+              <span style="font-size: 11px; color: #10B981; font-weight: 800;">91%</span>
+            </div>
+          </div>
+
+          <!-- Anglais -->
+          <div onclick="openSubjectHub('Anglais')" class="lib-subject-card"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 20px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;">
+            <div
+              style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16,185,129,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #10B981;">language</span>
+            </div>
+            <div>
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0;">Anglais</h2>
+              <p
+                style="font-size: 10px; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin: 4px 0 0;">
+                112 ITEMS</p>
+            </div>
+            <div
+              style="padding: 4px 10px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); border-radius: 8px; width: fit-content;">
+              <span style="font-size: 11px; color: #10B981; font-weight: 800;">88%</span>
+            </div>
+          </div>
+
+          <!-- Bouton (+) AJOUTER -->
+          <div onclick="toggleChapterModal()"
+            style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 28px; aspect-ratio: 1/1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0.6; cursor: pointer;">
+            <span class="material-symbols-outlined" style="font-size: 32px;">add_circle</span>
+            <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: 2px;">
+              AJOUTER</p>
+          </div>
+
+        </div><!-- /library-subjects-grid -->
+
+        <!-- DERNIÈRES ANALYSES -->
+        <div
+          style="display: flex; justify-content: space-between; align-items: flex-end; padding: 0 4px; margin-bottom: 24px;">
+          <h2
+            style="font-size: 10px; font-weight: 900; color: #64748B; text-transform: uppercase; letter-spacing: 3px; margin: 0;">
+            Dernières Analyses</h2>
+          <span style="font-size: 10px; font-weight: 700; color: #818CF8; cursor: pointer;">Voir tout</span>
+        </div>
+
+        <div id="library-file-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;">
+          <!-- Injected by renderLibraryFiles() -->
+          <div class="empty-state" style="text-align: center; padding: 40px 20px; color: #64748B;">
+            <span class="material-symbols-outlined"
+              style="font-size: 48px; opacity: 0.2; display: block; margin-bottom: 16px;">inbox</span>
+            <p style="font-size: 12px; font-weight: 700;">Aucun fichier analysé pour le moment.</p>
+          </div>
+        </div>
+
+      </div><!-- /content zone -->
+    </div><!-- /view-bibliotheque -->
+
+
 
     <div id="view-planning" class="flex-1 overflow-y-auto hidden bg-midnight pb-32">
       <!-- STITCH PRESTIGE CONTENT -->
@@ -776,7 +745,8 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="text-sm font-black text-white">Henri A. <span
-                      class="text-[9px] opacity-70 ml-1">(Toi)</span></h4>
+                      class="text-[9px] opacity-70 ml-1">(Toi)</span>
+                  </h4>
                   <span
                     class="text-[8px] font-bold border border-white/30 px-1.5 py-0.5 rounded text-white uppercase opacity-80">PTSI</span>
                 </div>
@@ -833,7 +803,7 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
           <!-- Flashcards -->
-          <div onclick="showToast('Mode Flashcards bientôt disponible')"
+          <div onclick="openFlashcards()"
             style="grid-column: span 2; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
             <div
               style="width: 48px; height: 48px; border-radius: 14px; background: #6366F1; display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);">
@@ -1139,98 +1109,177 @@
 
   <!-- ===================== VUE : SUBJECT HUB (PHYSIQUE) ===================== -->
   <div id="view-subject-hub" class="hidden"
-    style="height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: var(--midnight); z-index: 50; overflow-y: auto;">
+    style="height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #0F172A; z-index: 50; overflow-y: auto; font-family: 'Space Grotesk', 'Inter', sans-serif;">
     <div class="max-w-[430px] mx-auto min-h-screen relative">
-      <header class="pt-8 px-6 pb-6 bg-gradient-to-b from-black/20 to-transparent">
-        <div class="flex items-center justify-between mb-8">
+
+      <!-- HEADER -->
+      <header
+        style="position: sticky; top: 0; z-index: 10; display: flex; align-items: center; padding: 24px; justify-content: space-between; background: rgba(15,23,42,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <!-- Bouton Retour -->
           <button onclick="showView('view-bibliotheque')"
-            class="flex items-center gap-2 text-primary font-semibold hover:opacity-70 transition-opacity"
-            style="background:none; border:none; cursor:pointer; color:#6366F1;">
-            <span class="material-symbols-outlined text-[20px] font-bold">arrow_back_ios</span>
-            <span class="text-sm">Retour</span>
+            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; color: white;">
+            <span class="material-symbols-outlined">arrow_back</span>
           </button>
-          <div class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-            <span class="material-symbols-outlined text-gold-accent" style="color:#F59E0B;">stars</span>
-          </div>
+          <h1 id="hub-title"
+            style="font-size: 22px; font-weight: 700; color: white; margin: 0; letter-spacing: -0.025em;">Physique</h1>
         </div>
-        <div class="space-y-1">
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-8 bg-primary rounded-full" style="background:#6366F1;"></div>
-            <h1 id="hub-title" class="text-3xl font-bold tracking-tight" style="color:white; margin:0;">Physique</h1>
-          </div>
-          <p id="hub-subtitle" class="text-slate-400 text-sm ml-4" style="color:#94A3B8;">MPSI • 12 chapitres complétés
-          </p>
-        </div>
+        <button onclick="openAIModal()"
+          style="display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); border-radius: 16px; color: #818CF8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">psychology</span>
+          Analyser PDF
+        </button>
       </header>
 
-      <main class="px-6 py-4 pb-32" style="padding-bottom: 128px;">
-        <div style="display: flex; gap: 12px; margin-bottom: 24px; width: 100%;">
-          <!-- Card: Flashcards -->
-          <button onclick="openFlashcards()" class="glass-card ios-shadow transition-transform active:scale-95"
-            style="flex: 1; border-bottom: 4px solid rgba(99, 102, 241, 0.4); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; cursor: pointer;">
-            <div class="rounded-xl flex items-center justify-center mb-2"
-              style="width: 32px; height: 32px; background: rgba(99, 102, 241, 0.2); display: flex; align-items: center; justify-content: center;">
-              <span class="material-symbols-outlined text-primary" style="font-size: 20px; color:#6366F1;">style</span>
-            </div>
-            <div class="text-center">
-              <h2 class="font-bold leading-tight" style="color:white; font-size: 14px; margin: 0;">Flashcards</h2>
-              <p class="text-[8px] text-slate-400 uppercase tracking-wider font-semibold"
-                style="font-size: 8px; color: #94A3B8; text-transform: uppercase;">124 Items</p>
-            </div>
-          </button>
+      <main style="padding: 24px; padding-bottom: 120px; display: flex; flex-direction: column; gap: 32px;">
 
-          <!-- Card: Fiches -->
-          <button class="glass-card ios-shadow transition-transform active:scale-95"
-            style="flex: 1; border-bottom: 4px solid rgba(245, 158, 11, 0.4); border-radius: 20px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: auto; cursor: pointer;">
-            <div class="rounded-xl flex items-center justify-center mb-2"
-              style="width: 32px; height: 32px; background: rgba(245, 158, 11, 0.2); display: flex; align-items: center; justify-content: center;">
-              <span class="material-symbols-outlined text-gold-accent"
-                style="font-size: 20px; color:#F59E0B;">description</span>
-            </div>
-            <div class="text-center">
-              <h2 class="font-bold leading-tight" style="color:white; font-size: 14px; margin: 0;">Mes Fiches</h2>
-              <p class="text-[8px] text-slate-400 uppercase tracking-wider font-semibold"
-                style="font-size: 8px; color: #94A3B8; text-transform: uppercase;">18 Fiches</p>
-            </div>
-          </button>
+        <!-- Sous-titre dynamique -->
+        <p id="hub-subtitle"
+          style="font-size: 13px; color: #64748B; font-weight: 600; margin: -16px 0 0; letter-spacing: 0.05em; text-transform: uppercase;">
+          MPSI • 12 chapitres complétés</p>
+
+        <!-- BARRE DE RECHERCHE -->
+        <div style="position: relative;">
+          <div
+            style="position: absolute; inset-y: 0; left: 16px; display: flex; align-items: center; pointer-events: none;">
+            <span class="material-symbols-outlined" style="color: #64748B; font-size: 20px; transition: color 0.2s;"
+              id="hub-search-icon">search</span>
+          </div>
+          <input id="hub-search-input" type="text" placeholder="Rechercher..." oninput="filterHubRevisions()"
+            onfocus="document.getElementById('hub-search-icon').style.color='#6366F1'"
+            onblur="document.getElementById('hub-search-icon').style.color='#64748B'"
+            style="width: 100%; height: 56px; padding-left: 48px; padding-right: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; color: white; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
         </div>
 
-        <section class="mt-8 space-y-4" style="margin-top: 32px;">
-          <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest px-2"
-            style="font-size: 10px; font-weight: 800; color: #64748B; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px;">
-            Ressources du Chapitre</h3>
+        <!-- CARTES Flashcards & Fiches -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
 
-          <div class="glass-card rounded-2xl p-4 flex items-center gap-4"
-            style="border-left: 4px solid #10B981; border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px;">
-            <div class="w-10 h-10 rounded-xl bg-emerald-accent/10 flex items-center justify-center"
-              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(16, 185, 129, 0.1); display: flex; align-items: center; justify-content: center;">
-              <span class="material-symbols-outlined text-emerald-accent" style="color:#10B981;">quiz</span>
+          <!-- Flashcards -->
+          <div onclick="openFlashcards()"
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 20px rgba(99,102,241,0.15); cursor: pointer; transition: background 0.2s;">
+            <div
+              style="width: 56px; height: 56px; border-radius: 16px; background: rgba(99,102,241,0.2); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #6366F1; font-size: 28px;">psychology</span>
             </div>
-            <div class="flex-1">
-              <p class="text-sm font-bold" style="color:white; margin:0; font-size: 14px;">Quiz d'entraînement</p>
-              <p class="text-xs text-slate-400" style="color:#94A3B8; margin:2px 0 0; font-size: 11px;">Prêt pour le
-                prochain DS</p>
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: white; margin: 0;">Mes Flashcards</h3>
+              <p style="font-size: 13px; color: #64748B; font-weight: 500; margin: 4px 0 0;">240 cartes</p>
             </div>
-            <span class="material-symbols-outlined text-slate-600" style="color:#475569;">chevron_right</span>
+            <div
+              style="height: 6px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden;">
+              <div style="height: 100%; width: 66%; background: #6366F1; border-radius: 99px;"></div>
+            </div>
           </div>
 
-          <div class="glass-card rounded-2xl p-4 flex items-center gap-4"
-            style="border-radius: 20px; padding: 16px; display: flex; align-items: center; gap: 16px;">
-            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center"
-              style="width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
-              <span class="material-symbols-outlined text-slate-400" style="color:#94A3B8;">analytics</span>
+          <!-- Mes Fiches -->
+          <div
+            style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 20px rgba(99,102,241,0.15); cursor: pointer; transition: background 0.2s;">
+            <div
+              style="width: 56px; height: 56px; border-radius: 16px; background: rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: #818CF8; font-size: 28px;">description</span>
             </div>
-            <div class="flex-1">
-              <p class="text-sm font-bold" style="color:white; margin:0; font-size: 14px;">Analytiques détaillées</p>
-              <p class="text-xs text-slate-400" style="color:#94A3B8; margin:2px 0 0; font-size: 11px;">Identifiez vos
-                points faibles</p>
+            <div>
+              <h3 style="font-size: 16px; font-weight: 700; color: white; margin: 0;">Mes Fiches</h3>
+              <p style="font-size: 13px; color: #64748B; font-weight: 500; margin: 4px 0 0;">12 fiches</p>
             </div>
-            <span class="material-symbols-outlined text-slate-600" style="color:#475569;">chevron_right</span>
+            <div
+              style="height: 6px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 99px; overflow: hidden;">
+              <div style="height: 100%; width: 33%; background: #818CF8; border-radius: 99px;"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RÉVISIONS RÉCENTES -->
+        <section>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h2 style="font-size: 18px; font-weight: 700; color: white; margin: 0; letter-spacing: -0.025em;">Révisions
+              récentes</h2>
+            <button
+              style="font-size: 13px; color: #6366F1; font-weight: 700; background: none; border: none; cursor: pointer;">Voir
+              tout</button>
+          </div>
+
+          <div id="hub-revisions-list" style="display: flex; flex-direction: column; gap: 12px;">
+
+            <!-- Révision 1 -->
+            <div class="hub-revision-item"
+              style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #6366F1, #4F46E5); display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="color: white; font-size: 22px;">bolt</span>
+              </div>
+              <div style="flex: 1; overflow: hidden;">
+                <h4 class="hub-revision-title"
+                  style="font-size: 14px; font-weight: 700; color: white; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Électromagnétisme</h4>
+                <p style="font-size: 11px; color: #64748B; margin: 3px 0 0;">Dernière révision : hier</p>
+              </div>
+              <span class="material-symbols-outlined" style="color: #475569; flex-shrink: 0;">chevron_right</span>
+            </div>
+
+            <!-- Révision 2 -->
+            <div class="hub-revision-item"
+              style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #10B981, #0D9488); display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="color: white; font-size: 22px;">waves</span>
+              </div>
+              <div style="flex: 1; overflow: hidden;">
+                <h4 class="hub-revision-title"
+                  style="font-size: 14px; font-weight: 700; color: white; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Ondes et Vibrations</h4>
+                <p style="font-size: 11px; color: #64748B; margin: 3px 0 0;">Dernière révision : il y a 3 jours</p>
+              </div>
+              <span class="material-symbols-outlined" style="color: #475569; flex-shrink: 0;">chevron_right</span>
+            </div>
+
+            <!-- Révision 3 -->
+            <div class="hub-revision-item"
+              style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="color: white; font-size: 22px;">thermostat</span>
+              </div>
+              <div style="flex: 1; overflow: hidden;">
+                <h4 class="hub-revision-title"
+                  style="font-size: 14px; font-weight: 700; color: white; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Thermodynamique</h4>
+                <p style="font-size: 11px; color: #64748B; margin: 3px 0 0;">Dernière révision : il y a 1 semaine</p>
+              </div>
+              <span class="material-symbols-outlined" style="color: #475569; flex-shrink: 0;">chevron_right</span>
+            </div>
+
+            <!-- Révision 4 -->
+            <div class="hub-revision-item"
+              style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
+              <div
+                style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #8B5CF6, #6366F1); display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="color: white; font-size: 22px;">engineering</span>
+              </div>
+              <div style="flex: 1; overflow: hidden;">
+                <h4 class="hub-revision-title"
+                  style="font-size: 14px; font-weight: 700; color: white; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  Mécanique des Fluides</h4>
+                <p style="font-size: 11px; color: #64748B; margin: 3px 0 0;">Dernière révision : il y a 2 semaines</p>
+              </div>
+              <span class="material-symbols-outlined" style="color: #475569; flex-shrink: 0;">chevron_right</span>
+            </div>
+
+            <!-- Message vide (caché par défaut) -->
+            <div id="hub-revisions-empty" style="display: none; text-align: center; padding: 32px; color: #64748B;">
+              <span class="material-symbols-outlined"
+                style="font-size: 40px; opacity: 0.3; display: block; margin-bottom: 12px;">search_off</span>
+              <p style="font-size: 13px; font-weight: 600;">Aucun résultat pour cette recherche.</p>
+            </div>
+
           </div>
         </section>
+
       </main>
     </div>
   </div>
+
 
   <!-- ===================== MODAL : AJOUTER CHAPITRE ===================== -->
   <div id="modal-add-chapter" class="hidden"
@@ -1260,7 +1309,7 @@
 
   <script src="app.js"></script>
   <!-- ===================== INTERFACE DE RÉVISION : FLASHCARDS ===================== -->
-  <div id="view-flashcards" class="fixed inset-0 z-[150] bg-[#020617] flex flex-col p-6 hidden">
+  <div id="view-flashcards" class="fixed inset-0 z-[200] bg-[#020617] flex flex-col p-6 hidden">
 
     <!-- Header & Progress -->
     <div class="flex flex-col gap-4 mb-8 mt-4">
@@ -1334,6 +1383,86 @@
       </button>
     </div>
 
+  </div>
+  <!-- ===================== MODAL : ANALYSE PDF IA ===================== -->
+  <div id="modal-ai-analysis" class="fixed inset-0 z-[200] flex items-center justify-center p-6 hidden"
+    style="position:fixed; inset:0; z-index:200; align-items:center; justify-content:center; padding:24px;">
+    <!-- Overlay sombre avec flou intense -->
+    <div class="absolute inset-0 bg-[#020617]/80 backdrop-blur-xl"
+      style="position:absolute; inset:0; background:rgba(2,6,23,0.8); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);">
+    </div>
+
+    <!-- Contenu du Modal -->
+    <div
+      class="relative bg-[#0F172A] border border-indigo-500/20 w-full max-w-sm rounded-[40px] p-8 shadow-[0_20px_50px_rgba(78,106,255,0.15)] overflow-hidden"
+      style="position:relative; background:#0F172A; border:1px solid rgba(99,102,241,0.2); width:100%; max-width:384px; border-radius:40px; padding:32px; overflow:hidden;">
+
+      <!-- Background Glow -->
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-600/10 rounded-full blur-[80px]"
+        style="position:absolute; top:-96px; right:-96px; width:192px; height:192px; background:rgba(79,70,229,0.1); border-radius:50%; filter:blur(80px);">
+      </div>
+
+      <div class="flex justify-between items-start mb-8"
+        style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:32px;">
+        <div>
+          <h3 class="text-xl font-black text-white tracking-tight"
+            style="font-size:20px; font-weight:900; color:white; margin:0;">Analyse IA</h3>
+          <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1"
+            style="font-size:10px; font-weight:700; color:#818CF8; text-transform:uppercase; letter-spacing:0.1em; margin-top:4px;">
+            Scanner de documents</p>
+        </div>
+        <button onclick="closeAIModal()" class="text-slate-500 hover:text-white transition-colors"
+          style="background:none; border:none; cursor:pointer; color:#64748B;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- ZONE DE DÉPÔT (DROP ZONE) -->
+      <div id="drop-zone" onclick="handleFileUpload()"
+        class="border-2 border-dashed border-indigo-500/30 rounded-[32px] p-10 flex flex-col items-center justify-center gap-4 bg-indigo-500/5 hover:bg-indigo-500/10 transition-all cursor-pointer group"
+        style="border:2px dashed rgba(99,102,241,0.3); border-radius:32px; padding:40px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; background:rgba(99,102,241,0.05); cursor:pointer;">
+        <div
+          class="w-16 h-16 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-500"
+          style="width:64px; height:64px; border-radius:50%; background:rgba(79,70,229,0.2); display:flex; align-items:center; justify-content:center; color:#818CF8;">
+          <span class="material-symbols-outlined text-4xl animate-bounce" style="font-size:36px;">upload_file</span>
+        </div>
+        <p class="text-xs font-bold text-slate-300 text-center px-4 leading-relaxed"
+          style="font-size:12px; font-weight:700; color:#CBD5E1; text-align:center; padding-left:16px; padding-right:16px; margin:0;">
+          Dépose ton PDF de cours ici pour commencer</p>
+        <span class="text-[9px] font-black text-indigo-500/60 uppercase tracking-widest"
+          style="font-size:9px; font-weight:900; color:rgba(99,102,241,0.6); text-transform:uppercase; letter-spacing:0.1em;">Max
+          25 Mo • PDF</span>
+        <input type="file" id="ai-pdf-upload" class="hidden" accept="application/pdf" style="display:none;"
+          onchange="startSimulation()">
+      </div>
+
+      <!-- FEEDBACK D'ANALYSE (Caché par défaut) -->
+      <div id="analysis-feedback" class="mt-8 hidden" style="margin-top:32px; display:none;">
+        <div class="flex justify-between items-end mb-2"
+          style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:8px;">
+          <span id="ai-status-msg"
+            class="text-[10px] font-black text-indigo-400 uppercase tracking-widest animate-pulse"
+            style="font-size:10px; font-weight:900; color:#818CF8; text-transform:uppercase; letter-spacing:0.1em;">Extraction
+            des formules...</span>
+          <span id="ai-percent" class="text-[10px] font-bold text-slate-500"
+            style="font-size:10px; font-weight:700; color:#64748B;">0%</span>
+        </div>
+        <!-- Barre de progression néon -->
+        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"
+          style="width:100%; height:6px; background:#1E293B; border-radius:9999px; overflow:hidden;">
+          <div id="ai-progress-bar"
+            class="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 shadow-[0_0_15px_#6366f1] transition-all duration-500"
+            style="height:100%; background:linear-gradient(to right, #4F46E5, #818CF8); width:0%; transition:all 0.5s ease;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Bouton d'action (Simulé) -->
+      <button onclick="startSimulation()"
+        class="w-full mt-8 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl text-[11px] font-black uppercase tracking-[2px] text-white shadow-lg shadow-indigo-500/20 transition-all"
+        style="width:100%; margin-top:32px; padding-top:16px; padding-bottom:16px; background:#4F46E5; border:none; border-radius:16px; font-size:11px; font-weight:900; color:white; text-transform:uppercase; letter-spacing:2px; cursor:pointer;">Lancer
+        la génération</button>
+    </div>
   </div>
 </body>
 

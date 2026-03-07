@@ -3392,3 +3392,185 @@ function setScope(scope) {
   const scopeNames = { 'ecole': 'Établissement', 'ville': 'Ville', 'national': 'National' };
   showToast(`📍 Scope changé : ${scopeNames[scope]}`);
 }
+
+/* ============================================================
+   PRAXIS — AI PDF ANALYSIS (Logic & Animation)
+   ============================================================ */
+
+function openAIModal() {
+  const modal = document.getElementById('modal-ai-analysis');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeAIModal() {
+  const modal = document.getElementById('modal-ai-analysis');
+  if (modal) modal.classList.add('hidden');
+}
+
+function handleFileUpload() {
+  const fileInput = document.getElementById('ai-pdf-upload');
+  if (fileInput) fileInput.click();
+}
+
+function generateContentFromPDF() {
+  // Placeholder for future IA integration
+  console.log("Generating content from PDF...");
+}
+
+function startSimulation() {
+  const fileInput = document.getElementById('ai-pdf-upload');
+  let fileName = "Analyse_Cours.pdf"; // Fallback par défaut
+
+  if (fileInput && fileInput.files.length > 0) {
+    fileName = fileInput.files[0].name;
+    showToast(`📄 Fichier "${fileName}" prêt pour l'analyse.`);
+  }
+
+  const feedback = document.getElementById('analysis-feedback');
+  const statusMsg = document.getElementById('ai-status-msg');
+  const progressBar = document.getElementById('ai-progress-bar');
+  const percentTxt = document.getElementById('ai-percent');
+
+  if (!feedback || !statusMsg || !progressBar || !percentTxt) return;
+
+  feedback.style.display = 'block';
+  feedback.classList.remove('hidden');
+
+  const steps = [
+    { p: 20, m: "Lecture du document..." },
+    { p: 45, m: "Extraction des formules..." },
+    { p: 70, m: "Identification des concepts clés..." },
+    { p: 90, m: "Génération des flashcards..." },
+    { p: 100, m: "Terminé !" }
+  ];
+
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < steps.length) {
+      progressBar.style.width = `${steps[i].p}%`;
+      percentTxt.textContent = `${steps[i].p}%`;
+      statusMsg.textContent = steps[i].m;
+      i++;
+    } else {
+      clearInterval(interval);
+      showToast("✨ 12 Flashcards générées avec succès !");
+
+      // Sauvegarde dans le répertoire intelligent
+      const subject = document.getElementById('hub-title')?.textContent || 'Général';
+      saveAnalyzedPDF(fileName, subject);
+
+      generateContentFromPDF();
+      setTimeout(closeAIModal, 1500);
+
+      // Reset for next time
+      setTimeout(() => {
+        progressBar.style.width = '0%';
+        percentTxt.textContent = '0%';
+        feedback.style.display = 'none';
+        feedback.classList.add('hidden');
+      }, 2000);
+    }
+  }, 1000);
+}
+
+/**
+ * RÉPERTOIRE INTELLIGENT : Logique de persistance et rendu
+ */
+function saveAnalyzedPDF(name, subject) {
+  const history = JSON.parse(localStorage.getItem('praxis_analysis_history') || '[]');
+  const newEntry = {
+    name: name,
+    subject: subject,
+    date: new Date().toISOString()
+  };
+  history.unshift(newEntry);
+  // On garde les 10 dernières analyses
+  localStorage.setItem('praxis_analysis_history', JSON.stringify(history.slice(0, 10)));
+  renderLibraryFiles();
+}
+
+function renderLibraryFiles() {
+  const container = document.getElementById('library-file-list');
+  if (!container) return;
+
+  const history = JSON.parse(localStorage.getItem('praxis_analysis_history') || '[]');
+
+  if (history.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="text-align: center; padding: 40px 20px; color: #64748B;">
+        <span class="material-symbols-outlined" style="font-size: 48px; opacity: 0.2; display: block; margin-bottom: 16px;">inbox</span>
+        <p style="font-size: 12px; font-weight: 700;">Aucun fichier analysé pour le moment.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = history.map(item => {
+    const timeLabel = formatTimeAgo(item.date);
+    return `
+      <div class="bg-slate-900/40 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-slate-800/40 transition-all">
+          <div class="flex items-center gap-4 overflow-hidden">
+              <div class="w-10 h-10 shrink-0 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 border border-red-500/10">
+                  <span class="material-symbols-outlined">picture_as_pdf</span>
+              </div>
+              <div class="overflow-hidden">
+                  <h4 class="font-bold text-sm truncate pr-2">${item.name}</h4>
+                  <p class="text-[10px] text-slate-500">${timeLabel} • ${item.subject}</p>
+              </div>
+          </div>
+          <div class="flex gap-1.5 shrink-0">
+              <div class="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20" title="Flashcards générées">
+                  <span class="material-symbols-outlined text-[14px] font-variation-fill">bolt</span>
+              </div>
+              <div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/20" title="Synthèse prête">
+                  <span class="material-symbols-outlined text-[14px]">description</span>
+              </div>
+          </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function formatTimeAgo(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now - date) / 60000);
+
+  if (diffInMinutes < 1) return "À l'instant";
+  if (diffInMinutes < 60) return `Il y a ${diffInMinutes} min`;
+  if (diffInMinutes < 1440) return `Il y a ${Math.floor(diffInMinutes / 60)}h`;
+  return date.toLocaleDateString('fr-FR');
+}
+
+function filterLibrary() {
+  const term = (document.getElementById('library-search')?.value || '').toLowerCase().trim();
+  const cards = document.querySelectorAll('.lib-subject-card');
+
+  cards.forEach(card => {
+    const name = card.querySelector('h2')?.textContent.toLowerCase() || '';
+    const visible = !term || name.includes(term);
+    card.style.display = visible ? 'flex' : 'none';
+  });
+}
+
+// Filtre la liste "Révisions récentes" dans le Subject Hub
+function filterHubRevisions() {
+  const term = (document.getElementById('hub-search-input')?.value || '').toLowerCase().trim();
+  const items = document.querySelectorAll('.hub-revision-item');
+  const emptyMsg = document.getElementById('hub-revisions-empty');
+  let visibleCount = 0;
+
+  items.forEach(item => {
+    const title = item.querySelector('.hub-revision-title')?.textContent.toLowerCase() || '';
+    const visible = !term || title.includes(term);
+    item.style.display = visible ? 'flex' : 'none';
+    if (visible) visibleCount++;
+  });
+
+  if (emptyMsg) emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+  renderLibraryFiles();
+});
