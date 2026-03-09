@@ -3399,7 +3399,7 @@ function setScope(scope) {
 
 function openAIModal() {
   const modal = document.getElementById('analysis-modal-container');
-  if (modal) modal.classList.remove('hidden');
+  if (modal) { modal.classList.remove('hidden'); resetAIModal(); }
 }
 
 function closeAIModal() {
@@ -3407,15 +3407,113 @@ function closeAIModal() {
   if (modal) modal.classList.add('hidden');
 }
 
-function handleFileUpload() {
-  const fileInput = document.getElementById('ai-pdf-upload');
-  if (fileInput) fileInput.click();
+// Remet le modal en état initial
+function resetAIModal() {
+  const idle = document.getElementById('ai-idle-state');
+  const loading = document.getElementById('ai-loading-state');
+  const success = document.getElementById('ai-success-state');
+  const bar = document.getElementById('ai-progress-bar');
+  const txt = document.getElementById('ai-loading-text');
+  const overlay = document.getElementById('ai-modal-overlay');
+
+  if (idle) idle.style.display = 'block';
+  if (loading) loading.style.display = 'none';
+  if (success) success.style.display = 'none';
+  if (bar) bar.style.width = '0%';
+  if (txt) txt.textContent = 'Lecture du PDF...';
+  // Réactive la fermeture par l'overlay
+  if (overlay) overlay.style.pointerEvents = 'auto';
+}
+
+// ===== ANIMATION DE GÉNÉRATION IA =====
+function startAIGeneration() {
+  const idle = document.getElementById('ai-idle-state');
+  const loading = document.getElementById('ai-loading-state');
+  const success = document.getElementById('ai-success-state');
+  const bar = document.getElementById('ai-progress-bar');
+  const txt = document.getElementById('ai-loading-text');
+  const overlay = document.getElementById('ai-modal-overlay');
+
+  if (!idle || !loading) return;
+
+  // Passe en état "chargement"
+  idle.style.display = 'none';
+  loading.style.display = 'block';
+  success.style.display = 'none';
+
+  // Bloque la fermeture accidentelle par l'overlay
+  if (overlay) overlay.style.pointerEvents = 'none';
+
+  const messages = [
+    'Lecture du PDF...',
+    'Extraction des concepts clés...',
+    'Génération des Flashcards...',
+    'Finalisation de la fiche de synthèse...'
+  ];
+  const progressSteps = [15, 40, 70, 90, 100];
+  let step = 0;
+
+  function nextStep() {
+    if (step < messages.length) {
+      // Fade out
+      if (txt) { txt.style.opacity = '0'; txt.style.transform = 'translateY(6px)'; }
+      setTimeout(() => {
+        if (txt) {
+          txt.textContent = messages[step];
+          txt.style.opacity = '1';
+          txt.style.transform = 'translateY(0)';
+        }
+        if (bar) bar.style.width = (progressSteps[step] || 90) + '%';
+        step++;
+      }, 280);
+    } else {
+      // Succès
+      clearInterval(interval);
+      if (bar) bar.style.width = '100%';
+      setTimeout(() => {
+        loading.style.display = 'none';
+        success.style.display = 'block';
+        if (overlay) overlay.style.pointerEvents = 'auto';
+        // Injecte une entrée dans "Dernières Analyses"
+        addLibraryEntry('Cours analysé par IA', new Date().toLocaleDateString('fr-FR'));
+        showToast('✅ Cours analysé avec succès !');
+      }, 600);
+    }
+  }
+
+  nextStep();
+  const interval = setInterval(nextStep, 2500);
+}
+
+// Ajoute dynamiquement une ligne dans la section "Dernières Analyses"
+function addLibraryEntry(fileName, dateStr) {
+  const list = document.getElementById('library-file-list');
+  if (!list) return;
+
+  // Supprime l'état vide si présent
+  const emptyState = list.querySelector('.empty-state');
+  if (emptyState) emptyState.remove();
+
+  const entry = document.createElement('div');
+  entry.style.cssText = 'display:flex; align-items:center; gap:16px; padding:14px 16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; animation:fadeInUp 0.4s ease;';
+  entry.innerHTML = `
+    <div style="width:40px; height:40px; border-radius:12px; background:rgba(99,102,241,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+      <span class="material-symbols-outlined" style="color:#818CF8; font-size:20px;">description</span>
+    </div>
+    <div style="flex:1; overflow:hidden;">
+      <p style="font-size:13px; font-weight:700; color:white; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${fileName}</p>
+      <p style="font-size:11px; color:#64748B; margin:3px 0 0;">${dateStr}</p>
+    </div>
+    <span class="material-symbols-outlined" style="color:#475569; font-size:18px; flex-shrink:0;">auto_awesome</span>
+  `;
+  list.insertBefore(entry, list.firstChild);
 }
 
 function generateContentFromPDF() {
-  // Placeholder for future IA integration
-  console.log("Generating content from PDF...");
+  // Placeholder pour future intégration IA réelle
+  console.log('Generating content from PDF...');
 }
+
 
 function startSimulation() {
   const fileInput = document.getElementById('ai-pdf-upload');
