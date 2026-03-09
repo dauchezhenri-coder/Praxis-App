@@ -3398,12 +3398,12 @@ function setScope(scope) {
    ============================================================ */
 
 function openAIModal() {
-  const modal = document.getElementById('modal-ai-analysis');
+  const modal = document.getElementById('analysis-modal-container');
   if (modal) modal.classList.remove('hidden');
 }
 
 function closeAIModal() {
-  const modal = document.getElementById('modal-ai-analysis');
+  const modal = document.getElementById('analysis-modal-container');
   if (modal) modal.classList.add('hidden');
 }
 
@@ -3542,33 +3542,93 @@ function formatTimeAgo(dateString) {
   return date.toLocaleDateString('fr-FR');
 }
 
+// ===== LIVE SEARCH : BIBLIOTHÈQUE =====
 function filterLibrary() {
-  const term = (document.getElementById('library-search')?.value || '').toLowerCase().trim();
-  const cards = document.querySelectorAll('.lib-subject-card');
+  const input = document.getElementById('library-search');
+  const term = (input?.value || '').toLowerCase().trim();
 
+  const cards = document.querySelectorAll('.lib-subject-card');
+  const addBtn = document.querySelector('#library-subjects-grid div[onclick="toggleChapterModal()"]');
+  const analysesHeader = document.getElementById('lib-analyses-header');
+  const analysesList = document.getElementById('library-file-list');
+  const emptyState = document.getElementById('lib-empty-state');
+  const clearBtn = document.getElementById('lib-search-clear');
+  const searchBar = document.getElementById('lib-search-bar');
+
+  const isSearching = term.length > 0;
+
+  // Bouton effacer
+  if (clearBtn) clearBtn.style.display = isSearching ? 'flex' : 'none';
+  // Bordure active
+  if (searchBar) searchBar.style.borderColor = isSearching ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.1)';
+
+  // Filtre les cartes matières
+  let visibleCount = 0;
   cards.forEach(card => {
     const name = card.querySelector('h2')?.textContent.toLowerCase() || '';
-    const visible = !term || name.includes(term);
+    const visible = !isSearching || name.includes(term);
     card.style.display = visible ? 'flex' : 'none';
+    if (visible) visibleCount++;
   });
+
+  // Bouton AJOUTER : caché pendant la recherche
+  if (addBtn) addBtn.style.display = isSearching ? 'none' : 'flex';
+
+  // Section "Dernières Analyses" : cachée pendant la recherche
+  if (analysesHeader) analysesHeader.style.display = isSearching ? 'none' : 'flex';
+  if (analysesList) analysesList.style.display = isSearching ? 'none' : 'flex';
+
+  // Empty state
+  if (emptyState) emptyState.style.display = (isSearching && visibleCount === 0) ? 'block' : 'none';
 }
 
-// Filtre la liste "Révisions récentes" dans le Subject Hub
+function clearLibrarySearch() {
+  const input = document.getElementById('library-search');
+  if (input) { input.value = ''; input.focus(); }
+  filterLibrary();
+}
+
+// ===== LIVE SEARCH : SUBJECT HUB =====
 function filterHubRevisions() {
-  const term = (document.getElementById('hub-search-input')?.value || '').toLowerCase().trim();
+  const input = document.getElementById('hub-search-input');
+  const term = (input?.value || '').toLowerCase().trim();
+
   const items = document.querySelectorAll('.hub-revision-item');
   const emptyMsg = document.getElementById('hub-revisions-empty');
-  let visibleCount = 0;
+  const cardsSection = document.getElementById('hub-cards-section');
+  const revisionsHeader = document.getElementById('hub-revisions-header');
+  const clearBtn = document.getElementById('hub-search-clear');
 
+  const isSearching = term.length > 0;
+
+  // Bouton effacer
+  if (clearBtn) clearBtn.style.display = isSearching ? 'flex' : 'none';
+
+  // Cartes Flashcards & Fiches : cachées pendant la recherche
+  if (cardsSection) cardsSection.style.display = isSearching ? 'none' : 'grid';
+
+  // Header "Révisions récentes" : caché pendant la recherche active si on cherche
+  if (revisionsHeader) revisionsHeader.style.display = isSearching ? 'none' : 'flex';
+
+  // Filtre les révisions
+  let visibleCount = 0;
   items.forEach(item => {
     const title = item.querySelector('.hub-revision-title')?.textContent.toLowerCase() || '';
-    const visible = !term || title.includes(term);
+    const visible = !isSearching || title.includes(term);
     item.style.display = visible ? 'flex' : 'none';
     if (visible) visibleCount++;
   });
 
-  if (emptyMsg) emptyMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+  // Empty state
+  if (emptyMsg) emptyMsg.style.display = (isSearching && visibleCount === 0) ? 'block' : 'none';
 }
+
+function clearHubSearch() {
+  const input = document.getElementById('hub-search-input');
+  if (input) { input.value = ''; input.focus(); }
+  filterHubRevisions();
+}
+
 
 // Initialisation au chargement
 document.addEventListener('DOMContentLoaded', () => {
