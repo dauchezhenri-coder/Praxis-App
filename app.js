@@ -3267,7 +3267,26 @@ function openSubjectHub(subjectName) {
    PRAXIS — MODULE FLASHCARDS (Logic & Anim)
    ============================================================ */
 
+// ===== FICHE DE SYNTHÈSE =====
+function openSummaryDetail() {
+  // Cache le Subject Hub et affiche la fiche
+  const hub = document.getElementById('view-subject-hub');
+  const fiche = document.getElementById('view-summary-detail');
+  if (hub) hub.classList.add('hidden');
+  if (fiche) fiche.classList.remove('hidden');
+}
+
+function closeSummaryDetail() {
+  // Retour au Subject Hub via la flèche retour
+  const fiche = document.getElementById('view-summary-detail');
+  const hub = document.getElementById('view-subject-hub');
+  if (fiche) fiche.classList.add('hidden');
+  if (hub) hub.classList.remove('hidden');
+}
+
+
 function openFlashcards() {
+
   document.getElementById('view-flashcards').classList.remove('hidden');
   // Optionnel : Réinitialiser la carte si nécessaire
   const card = document.getElementById('flashcard');
@@ -3425,8 +3444,55 @@ function resetAIModal() {
   if (overlay) overlay.style.pointerEvents = 'auto';
 }
 
+// ===== EXTRACTION PDF (pdf.js) =====
+
+// Variable globale qui stockera le texte brut extrait du PDF
+let rawCourseText = '';
+
+/**
+ * extractTextFromPDF(file)
+ * Lit un fichier PDF page par page via pdf.js et retourne le texte concaténé.
+ * @param {File} file - Le fichier PDF sélectionné par l'utilisateur
+ * @returns {Promise<string>} - Le texte brut de toutes les pages
+ */
+async function extractTextFromPDF(file) {
+  try {
+    // Chargement dynamique de pdf.js depuis le CDN (ESM)
+    const pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
+
+    // Lecture du fichier en ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+
+    // Chargement du document PDF
+    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const totalPages = pdfDoc.numPages;
+    const textParts = [];
+
+    console.log(`📄 PDF chargé : ${file.name} — ${totalPages} page(s)`);
+
+    // Itération sur chaque page
+    for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+      const page = await pdfDoc.getPage(pageNum);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ');
+      textParts.push(`\n--- Page ${pageNum} ---\n${pageText}`);
+    }
+
+    const fullText = textParts.join('\n');
+    console.log('📝 Texte extrait :', fullText);
+    return fullText;
+
+  } catch (err) {
+    console.error('❌ Erreur d\'extraction PDF :', err);
+    return '';
+  }
+}
+
 // ===== ANIMATION DE GÉNÉRATION IA =====
-function startAIGeneration() {
+async function startAIGeneration() {
+
   const idle = document.getElementById('ai-idle-state');
   const loading = document.getElementById('ai-loading-state');
   const success = document.getElementById('ai-success-state');
@@ -3435,6 +3501,18 @@ function startAIGeneration() {
   const overlay = document.getElementById('ai-modal-overlay');
 
   if (!idle || !loading) return;
+
+  // ── Extraction PDF si un fichier est sélectionné ──────────────────
+  const fileInput = document.getElementById('ai-pdf-upload');
+  const selectedFile = fileInput && fileInput.files && fileInput.files[0];
+
+  if (selectedFile) {
+    console.log(`📂 Fichier sélectionné : ${selectedFile.name}`);
+    rawCourseText = await extractTextFromPDF(selectedFile);
+    console.log('📝 rawCourseText prêt pour le moteur IA :');
+    console.log(rawCourseText.substring(0, 500) + (rawCourseText.length > 500 ? '…' : ''));
+  }
+
 
   // Passe en état "chargement"
   idle.style.display = 'none';

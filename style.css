@@ -79,6 +79,24 @@
 }
 
 /* ────────────────────────────────────────────
+   SUMMARY SHEET — Utility Classes
+──────────────────────────────────────────── */
+.formula-font {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  letter-spacing: 0.03em;
+}
+
+.glow-red {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+.glow-primary {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+
+/* ────────────────────────────────────────────
    PLANNING — Variables & Timeline Classes
 ──────────────────────────────────────────── */
 :root {

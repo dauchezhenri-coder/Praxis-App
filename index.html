@@ -28,8 +28,17 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
     integrity="sha384-+VBxd3r6XgURycqtZ117bY" crossorigin="anonymous"></script>
 
+  <!-- PDF.js : lecture PDF côté client -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs" type="module"
+    id="pdfjs-script"></script>
+  <script>
+    // Chargement de pdf.js en mode non-module via le CDN legacy
+    window.pdfjsWorkerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
+  </script>
+
   <!-- STITCH PRESTIGE TAILWIND & STYLES -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
   <style type="text/tailwindcss">
     :root {
             --midnight: #020617;
@@ -1185,7 +1194,7 @@
           </div>
 
           <!-- Mes Fiches -->
-          <div
+          <div onclick="openSummaryDetail()"
             style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 20px rgba(99,102,241,0.15); cursor: pointer; transition: background 0.2s;">
             <div
               style="width: 56px; height: 56px; border-radius: 16px; background: rgba(99,102,241,0.15); display: flex; align-items: center; justify-content: center;">
@@ -1200,6 +1209,7 @@
               <div style="height: 100%; width: 33%; background: #818CF8; border-radius: 99px;"></div>
             </div>
           </div>
+
 
         </div><!-- /hub-cards-section -->
 
@@ -1322,7 +1332,197 @@
   </div>
 
   <script src="app.js"></script>
+  <!-- ===================== VUE : FICHE DE SYNTHÈSE ===================== -->
+  <div id="view-summary-detail" class="hidden"
+    style="position:fixed; inset:0; z-index:180; background:#0F172A; display:flex; flex-direction:column; overflow-y:auto;">
+
+    <!-- Header sticky -->
+    <div
+      style="display:flex; align-items:center; background:rgba(15,23,42,0.85); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); position:sticky; top:0; z-index:10; padding:16px; border-bottom:1px solid rgba(99,102,241,0.2); justify-content:space-between;">
+      <div onclick="closeSummaryDetail()"
+        style="color:#94A3B8; width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; transition:background 0.2s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='transparent'">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </div>
+      <h2
+        style="color:white; font-size:16px; font-weight:700; font-family:'Space Grotesk',sans-serif; letter-spacing:-0.02em; flex:1; text-align:center;">
+        Fiche de Synthèse</h2>
+      <div style="width:40px; display:flex; justify-content:flex-end;">
+        <button style="color:#94A3B8; background:none; border:none; cursor:pointer;">
+          <span class="material-symbols-outlined">bookmark</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenu scrollable -->
+    <div style="padding:20px; display:flex; flex-direction:column; gap:24px; padding-bottom:120px;">
+
+      <!-- Titre & Badge -->
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span
+            style="padding:2px 10px; border-radius:9999px; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; background:rgba(239,68,68,0.1); color:#EF4444; border:1px solid rgba(239,68,68,0.2); box-shadow:0 0 10px rgba(239,68,68,0.2);">Difficile</span>
+          <span style="color:#64748B; font-size:12px; font-weight:500;">Physique • Chapitre 04</span>
+        </div>
+        <h1
+          style="color:white; font-size:28px; font-weight:700; font-family:'Space Grotesk',sans-serif; line-height:1.2; margin:0;">
+          Électrostatique : <span style="color:#6366F1;">Champ et Potentiel</span>
+        </h1>
+        <p style="color:#94A3B8; font-size:14px; line-height:1.6; margin:0;">Comprendre les interactions fondamentales
+          entre charges fixes et les propriétés du champ électrique.</p>
+      </div>
+
+      <!-- Bannière -->
+      <div
+        style="width:100%; height:160px; border-radius:20px; background:linear-gradient(135deg,rgba(30,27,75,0.8),rgba(99,102,241,0.15)); border:1px solid rgba(99,102,241,0.2); overflow:hidden; position:relative;">
+        <div style="position:absolute; inset:0; background:rgba(15,23,42,0.4);"></div>
+        <div
+          style="position:absolute; bottom:12px; left:12px; background:rgba(15,23,42,0.85); backdrop-filter:blur(8px); padding:6px 12px; border-radius:10px; border:1px solid rgba(99,102,241,0.2);">
+          <p
+            style="font-size:10px; font-weight:700; font-family:'Space Grotesk',sans-serif; color:#A5B4FC; text-transform:uppercase; letter-spacing:0.1em; margin:0;">
+            Praxis Education</p>
+        </div>
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+          <span class="material-symbols-outlined"
+            style="color:rgba(99,102,241,0.4); font-size:64px;">electric_bolt</span>
+        </div>
+      </div>
+
+      <!-- L'essentiel en 3 points -->
+      <section style="display:flex; flex-direction:column; gap:16px;">
+        <h3
+          style="color:white; font-size:18px; font-weight:700; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; gap:8px; margin:0;">
+          <span class="material-symbols-outlined" style="color:#6366F1; font-size:20px;">auto_awesome</span>
+          L'essentiel en 3 points
+        </h3>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div
+            style="display:flex; gap:16px; padding:16px; border-radius:14px; background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.1);">
+            <div
+              style="width:32px; height:32px; border-radius:10px; background:#6366F1; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-family:'Space Grotesk',sans-serif; color:white; font-size:14px;">
+              1</div>
+            <p style="font-size:14px; color:#CBD5E1; line-height:1.5; margin:0;">La force d'interaction suit la <span
+                style="color:#6366F1; font-weight:600;">Loi de Coulomb</span>, inversement proportionnelle au carré de
+              la distance.</p>
+          </div>
+          <div
+            style="display:flex; gap:16px; padding:16px; border-radius:14px; background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.1);">
+            <div
+              style="width:32px; height:32px; border-radius:10px; background:#6366F1; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-family:'Space Grotesk',sans-serif; color:white; font-size:14px;">
+              2</div>
+            <p style="font-size:14px; color:#CBD5E1; line-height:1.5; margin:0;">Le <span
+                style="color:#6366F1; font-weight:600;">Champ Électrique</span> est une propriété de l'espace créée par
+              toute charge Q, influençant d'autres charges.</p>
+          </div>
+          <div
+            style="display:flex; gap:16px; padding:16px; border-radius:14px; background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.1);">
+            <div
+              style="width:32px; height:32px; border-radius:10px; background:#6366F1; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-family:'Space Grotesk',sans-serif; color:white; font-size:14px;">
+              3</div>
+            <p style="font-size:14px; color:#CBD5E1; line-height:1.5; margin:0;">Le <span
+                style="color:#6366F1; font-weight:600;">Potentiel</span> est une grandeur scalaire liée à l'énergie
+              potentielle d'une charge dans le champ.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Formules Clés -->
+      <section style="display:flex; flex-direction:column; gap:16px;">
+        <h3
+          style="color:white; font-size:18px; font-weight:700; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; gap:8px; margin:0;">
+          <span class="material-symbols-outlined" style="color:#6366F1; font-size:20px;">functions</span>
+          Formules Clés
+        </h3>
+        <div
+          style="padding:24px; border-radius:20px; background:rgba(30,41,59,0.6); border:2px dashed rgba(99,102,241,0.2); display:flex; flex-direction:column; gap:20px;">
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <p
+              style="font-size:11px; color:#64748B; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; margin:0;">
+              Force de Coulomb</p>
+            <p class="formula-font"
+              style="font-size:20px; color:#A5B4FC; margin:0; font-family:serif; font-style:italic;">F = k · (|q₁q₂| /
+              r²)</p>
+          </div>
+          <div style="height:1px; background:rgba(99,102,241,0.1); width:100%;"></div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <p
+              style="font-size:11px; color:#64748B; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; margin:0;">
+              Champ Électrique</p>
+            <p class="formula-font"
+              style="font-size:20px; color:#A5B4FC; margin:0; font-family:serif; font-style:italic;">E = F / q = k · (Q
+              / r²)</p>
+          </div>
+          <div style="height:1px; background:rgba(99,102,241,0.1); width:100%;"></div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
+            <p
+              style="font-size:11px; color:#64748B; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; margin:0;">
+              Relation Champ-Potentiel</p>
+            <p class="formula-font"
+              style="font-size:20px; color:#A5B4FC; margin:0; font-family:serif; font-style:italic;">E = - grad(V)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Méthodologie -->
+      <section style="display:flex; flex-direction:column; gap:16px;">
+        <h3
+          style="color:white; font-size:18px; font-weight:700; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; gap:8px; margin:0;">
+          <span class="material-symbols-outlined" style="color:#6366F1; font-size:20px;">verified</span>
+          Méthodologie
+        </h3>
+        <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:16px;">
+          <li style="display:flex; align-items:flex-start; gap:12px;">
+            <span class="material-symbols-outlined"
+              style="color:#6366F1; font-size:20px; margin-top:2px; flex-shrink:0;">check_circle</span>
+            <div>
+              <p style="font-weight:700; font-size:14px; color:white; margin:0 0 4px;">Analyser les symétries</p>
+              <p style="font-size:12px; color:#94A3B8; margin:0;">Utilisez le théorème de Gauss si la distribution de
+                charge est symétrique.</p>
+            </div>
+          </li>
+          <li style="display:flex; align-items:flex-start; gap:12px;">
+            <span class="material-symbols-outlined"
+              style="color:#6366F1; font-size:20px; margin-top:2px; flex-shrink:0;">check_circle</span>
+            <div>
+              <p style="font-weight:700; font-size:14px; color:white; margin:0 0 4px;">Principe de superposition</p>
+              <p style="font-size:12px; color:#94A3B8; margin:0;">Sommez vectoriellement les champs créés par chaque
+                charge individuelle.</p>
+            </div>
+          </li>
+          <li style="display:flex; align-items:flex-start; gap:12px;">
+            <span class="material-symbols-outlined"
+              style="color:#6366F1; font-size:20px; margin-top:2px; flex-shrink:0;">check_circle</span>
+            <div>
+              <p style="font-weight:700; font-size:14px; color:white; margin:0 0 4px;">Vérifier les unités</p>
+              <p style="font-size:12px; color:#94A3B8; margin:0;">Toujours convertir les distances en mètres et les
+                charges en Coulombs.</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- Boutons bas fixes -->
+    <div
+      style="position:fixed; bottom:0; left:0; right:0; max-width:448px; margin:0 auto; background:rgba(15,23,42,0.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-top:1px solid rgba(99,102,241,0.2); padding:16px; display:flex; gap:12px; z-index:20;">
+      <button
+        style="flex:1; height:48px; border-radius:14px; border:1px solid rgba(255,255,255,0.12); color:#CBD5E1; font-weight:700; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; background:none; cursor:pointer; transition:background 0.2s;"
+        onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='none'">
+        <span class="material-symbols-outlined" style="font-size:20px;">picture_as_pdf</span>
+        PDF
+      </button>
+      <button onclick="openFlashcards()"
+        style="flex:2; height:48px; border-radius:14px; background:#6366F1; color:white; font-weight:700; font-family:'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; border:none; cursor:pointer; box-shadow:0 0 15px rgba(99,102,241,0.35); transition:filter 0.2s;"
+        onmouseover="this.style.filter='brightness(1.1)'" onmouseout="this.style.filter='brightness(1)'">
+        <span class="material-symbols-outlined" style="font-size:20px;">style</span>
+        Flashcards
+      </button>
+    </div>
+  </div>
+
   <!-- ===================== INTERFACE DE RÉVISION : FLASHCARDS ===================== -->
+
   <div id="view-flashcards" class="fixed inset-0 z-[200] bg-[#020617] flex flex-col p-6 hidden">
 
     <!-- Header & Progress -->
