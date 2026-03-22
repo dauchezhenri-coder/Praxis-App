@@ -3269,11 +3269,18 @@ function openSubjectHub(subjectName) {
 
 // ===== FICHE DE SYNTHÈSE =====
 function openSummaryDetail() {
-  // Cache le Subject Hub et affiche la fiche
-  const hub = document.getElementById('view-subject-hub');
-  const fiche = document.getElementById('view-summary-detail');
-  if (hub) hub.classList.add('hidden');
-  if (fiche) fiche.classList.remove('hidden');
+  // Cache le dossier de la matière et affiche la fiche de synthèse
+  document.getElementById('view-subject-hub').classList.add('hidden');
+  document.getElementById('view-summary-detail').classList.remove('hidden');
+
+  // Optionnel : Injecte des données de test pour voir le design de Stitch
+  const testData = {
+    titre: "Électrostatique : Champ et Potentiel",
+    pointsCles: ["Loi de Coulomb", "Champ Électrique", "Potentiel scalaire"],
+    formules: [{ nom: "Force", equation: "F = k.qQ/r²" }],
+    difficulte: "Difficile"
+  };
+  injectSynthesisData(testData);
 }
 
 function closeSummaryDetail() {
@@ -3444,46 +3451,35 @@ function resetAIModal() {
   if (overlay) overlay.style.pointerEvents = 'auto';
 }
 
-// ===== EXTRACTION PDF (pdf.js) =====
+// ===== EXTRACTION PDF (pdf.js 3.11) =====
 
 // Variable globale qui stockera le texte brut extrait du PDF
-let rawCourseText = '';
+let lastExtractedText = '';
 
 /**
- * extractTextFromPDF(file)
- * Lit un fichier PDF page par page via pdf.js et retourne le texte concaténé.
- * @param {File} file - Le fichier PDF sélectionné par l'utilisateur
- * @returns {Promise<string>} - Le texte brut de toutes les pages
+ * processPDF(file)
+ * Lit un fichier PDF page par page via pdf.js et retourne le texte.
  */
-async function extractTextFromPDF(file) {
+async function processPDF(file) {
   try {
-    // Chargement dynamique de pdf.js depuis le CDN (ESM)
-    const pdfjsLib = await import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.mjs');
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.mjs';
-
-    // Lecture du fichier en ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
 
-    // Chargement du document PDF
+    // Chargement du document PDF avec la version 3.11 (globale)
     const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const totalPages = pdfDoc.numPages;
     const textParts = [];
 
-    console.log(`📄 PDF chargé : ${file.name} — ${totalPages} page(s)`);
-
-    // Itération sur chaque page
     for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
       const page = await pdfDoc.getPage(pageNum);
       const textContent = await page.getTextContent();
       const pageText = textContent.items.map(item => item.str).join(' ');
-      textParts.push(`\n--- Page ${pageNum} ---\n${pageText}`);
+      textParts.push(pageText);
     }
 
-    const fullText = textParts.join('\n');
-    console.log('📝 Texte extrait :', fullText);
-    return fullText;
+    lastExtractedText = textParts.join('\n');
+    console.log(`Texte extrait : ${lastExtractedText.substring(0, 100)}...`);
 
+    return lastExtractedText;
   } catch (err) {
     console.error('❌ Erreur d\'extraction PDF :', err);
     return '';
@@ -3508,9 +3504,7 @@ async function startAIGeneration() {
 
   if (selectedFile) {
     console.log(`📂 Fichier sélectionné : ${selectedFile.name}`);
-    rawCourseText = await extractTextFromPDF(selectedFile);
-    console.log('📝 rawCourseText prêt pour le moteur IA :');
-    console.log(rawCourseText.substring(0, 500) + (rawCourseText.length > 500 ? '…' : ''));
+    await processPDF(selectedFile);
   }
 
 
@@ -3810,3 +3804,65 @@ function clearHubSearch() {
 document.addEventListener('DOMContentLoaded', () => {
   renderLibraryFiles();
 });
+
+// ===== INJECTION DE DONNÉES IA DANS LA FICHE DE SYNTHÈSE =====
+/**
+ * Remplit la fiche de synthèse avec les données de l'IA
+ * @param {Object} data - L'objet JSON retourné par l'IA
+ */
+function injectSynthesisData(data) {
+  const container = document.getElementById('synthesis-container');
+  if (!container) return;
+
+  // Déclenchement de l'animation de sortie
+  container.classList.add('fade-out');
+
+  setTimeout(() => {
+    // 1. Titre & Difficulté
+    document.getElementById('synthesis-title').textContent = data.titre;
+    const badge = document.getElementById('difficulty-badge');
+    badge.textContent = data.difficulte;
+    badge.className = `badge badge--${data.difficulte.toLowerCase()}`;
+
+    // 2. Points Clés
+    const pointsList = document.getElementById('points-cles-list');
+    pointsList.innerHTML = data.pointsCles.map((p, i) => `
+            <div class="flex gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
+                <span class="w-6 h-6 shrink-0 bg-indigo-600 rounded-full flex items-center justify-center text-[10px] font-black text-white">${i + 1}</span>
+                <p class="text-sm text-slate-300 leading-relaxed">${p}</p>
+            </div>
+        `).join('');
+
+    // 3. Formules
+    const formulasCont = document.getElementById('formulas-container');
+    formulasCont.innerHTML = data.formules.map(f => `
+            <div class="formula-card">
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-2">${f.nom}</p>
+                <div class="text-lg font-mono text-indigo-300">${f.equation}</div>
+            </div>
+        `).join('');
+
+    // Animation d'entrée
+    container.classList.remove('fade-out');
+    container.classList.add('fade-in');
+  }, 400);
+}
+
+// Fonction de test déclenchable via le bouton
+function testInjectSynthesis() {
+  const mockData = {
+    titre: "Thermodynamique : 1er et 2nd Principes",
+    pointsCles: [
+      "Le premier principe traduit la conservation de l'énergie (ΔU = W + Q).",
+      "Le second principe exprime l'irréversibilité des phénomènes réels avec la création d'entropie (ΔS ≥ 0).",
+      "Les machines thermiques nécessitent deux sources de chaleur selon le théorème de Carnot."
+    ],
+    formules: [
+      { nom: "Premier Principe", equation: "ΔU = W + Q" },
+      { nom: "Entropie créée", equation: "Sc = ΔS - Q/T ≥ 0" },
+      { nom: "Efficacité de Carnot", equation: "η = 1 - (Tf / Tc)" }
+    ],
+    difficulte: "Moyen" // Testons un badge "Moyen"
+  };
+  injectSynthesisData(mockData);
+}
