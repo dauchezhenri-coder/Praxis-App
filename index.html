@@ -838,7 +838,7 @@
           </div>
 
           <!-- Quiz -->
-          <div onclick="showToast('Mode Quiz bientôt disponible')"
+          <div onclick="showToast('Module en cours de développement')"
             style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
             <div
               style="width: 40px; height: 40px; border-radius: 12px; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; color: #4ADE80;">
@@ -849,7 +849,7 @@
           </div>
 
           <!-- QCM -->
-          <div onclick="showToast('Mode QCM bientôt disponible')"
+          <div onclick="showToast('Module en cours de développement')"
             style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
             <div
               style="width: 40px; height: 40px; border-radius: 12px; background: rgba(234, 179, 8, 0.2); border: 1px solid rgba(234, 179, 8, 0.3); display: flex; align-items: center; justify-content: center; color: #FACC15;">
@@ -860,7 +860,7 @@
           </div>
 
           <!-- Mode Examen -->
-          <div onclick="showToast('Mode Examen bientôt disponible')"
+          <div onclick="showToast('Module en cours de développement')"
             style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
             <div
               style="width: 40px; height: 40px; border-radius: 12px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; color: #F87171;">
@@ -871,7 +871,7 @@
           </div>
 
           <!-- Démonstrations -->
-          <div onclick="showToast('Mode Démonstrations bientôt disponible')"
+          <div onclick="showToast('Module en cours de développement')"
             style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer;">
             <div
               style="width: 40px; height: 40px; border-radius: 12px; background: rgba(168, 85, 247, 0.2); border: 1px solid rgba(168, 85, 247, 0.3); display: flex; align-items: center; justify-content: center; color: #C084FC;">
@@ -1227,7 +1227,8 @@
           <div id="hub-revisions-list" style="display: flex; flex-direction: column; gap: 12px;">
 
             <!-- Révision 1 -->
-            <div class="hub-revision-item"
+            <div class="hub-revision-item cursor-pointer hover:bg-white/5 transition-colors"
+              onclick="openFileActionMenu('Électromagnétisme.pdf', 'mock_1')"
               style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
               <div
                 style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #6366F1, #4F46E5); display: flex; align-items: center; justify-content: center;">
@@ -1243,7 +1244,8 @@
             </div>
 
             <!-- Révision 2 -->
-            <div class="hub-revision-item"
+            <div class="hub-revision-item cursor-pointer hover:bg-white/5 transition-colors"
+              onclick="openFileActionMenu('Ondes_Vibrations.pdf', 'mock_2')"
               style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
               <div
                 style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #10B981, #0D9488); display: flex; align-items: center; justify-content: center;">
@@ -1259,7 +1261,8 @@
             </div>
 
             <!-- Révision 3 -->
-            <div class="hub-revision-item"
+            <div class="hub-revision-item cursor-pointer hover:bg-white/5 transition-colors"
+              onclick="openFileActionMenu('Thermodynamique.pdf', 'mock_3')"
               style="display: flex; align-items: center; padding: 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; gap: 16px;">
               <div
                 style="width: 48px; height: 48px; border-radius: 14px; overflow: hidden; flex-shrink: 0; background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center;">
@@ -1452,6 +1455,47 @@
     </div>
   </div>
 
+  <!-- ===================== VUE : SUCCÈS ANALYSE IA ===================== -->
+  <div id="view-analysis-success"
+    class="hidden absolute top-0 left-0 w-full h-full z-[200] bg-[#020617] text-white flex flex-col items-center justify-center p-6 overflow-hidden">
+    <!-- Background Decoration: Blur Effect -->
+    <div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-indigo-500 rounded-full filter blur-[100px]"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-emerald-500 rounded-full filter blur-[100px]"></div>
+    </div>
+
+    <main class="flex-grow flex flex-col items-center justify-center w-full relative z-10"
+      data-purpose="analysis-success-state">
+      <!-- Success Card -->
+      <section class="glass-card w-full max-w-sm rounded-3xl p-10 flex flex-col items-center text-center">
+        <!-- Success Icon Container -->
+        <div class="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mb-8 glow-success">
+          <svg class="w-14 h-14 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+          </svg>
+        </div>
+        <!-- Text Content -->
+        <h1 class="text-3xl font-bold mb-4 tracking-tight">Analyse terminée !</h1>
+        <p class="text-slate-400 text-lg leading-relaxed">
+          15 Flashcards sur les <span class="text-white font-medium" id="success-course-name">Matrices</span> créées.
+        </p>
+      </section>
+    </main>
+
+    <!-- Footer CTA -->
+    <footer class="w-full max-w-sm pb-12 pt-4 relative z-10">
+      <button onclick="openFlashcardsFromSuccess()"
+        class="w-full bg-[#6366F1] hover:bg-indigo-500 text-white font-bold py-5 rounded-2xl flex items-center justify-center space-x-3 shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+        id="view-flashcards-btn">
+        <span class="text-lg">Voir les flashcards</span>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </button>
+    </footer>
+  </div>
+
   <!-- ===================== INTERFACE DE RÉVISION : FLASHCARDS ===================== -->
 
   <div id="view-flashcards" class="fixed inset-0 z-[200] bg-[#020617] flex flex-col p-6 hidden">
@@ -1611,6 +1655,86 @@
         </button>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ===================== MODAL ACTION MENU ===================== -->
+  <div
+    class="fixed inset-0 z-[250] flex flex-col items-center justify-end sm:justify-center p-4 bg-[#0b1326]/80 backdrop-blur-sm hidden transition-opacity duration-300 opacity-0"
+    id="view-file-actions">
+    <div
+      class="w-full max-w-md rounded-[2rem] p-8 glow-indigo relative overflow-hidden border-t border-l border-indigo-500/30 transition-transform duration-300 transform translate-y-full glass-premium"
+      id="file-actions-modal-content">
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-[80px]"></div>
+
+      <div class="text-center mb-10 relative z-10">
+        <div
+          class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-800 mb-6 border border-white/10">
+          <span class="material-symbols-outlined text-indigo-400 text-3xl">description</span>
+        </div>
+        <h3 class="font-bold text-2xl text-white tracking-tight mb-2" id="action-menu-filename">Fichier.pdf</h3>
+        <p class="text-[10px] tracking-widest uppercase text-slate-400 font-medium font-mono">Menu d'Actions</p>
+      </div>
+
+      <div class="space-y-4 relative z-10">
+        <button onclick="triggerSynthesisGeneration()"
+          class="w-full flex items-center justify-between p-5 rounded-2xl prestige-gradient border border-white/10 hover:border-indigo-400/80 transition-all duration-300 group active:scale-95 shadow-lg shadow-black/20">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center transition-transform group-hover:scale-110 text-indigo-400 font-variation-fill">
+              <span class="material-symbols-outlined text-2xl">description</span>
+            </div>
+            <div class="flex flex-col items-start text-left">
+              <span class="font-bold text-lg text-white">✨ Générer une Fiche</span>
+              <span id="btn-fiche-status" style="display:none;"
+                class="mt-1 text-[10px] text-emerald-400 font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1"><span
+                  class="material-symbols-outlined text-[10px] font-variation-fill">check_circle</span> Déjà
+                généré</span>
+            </div>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-500 group-hover:text-indigo-400 transition-colors">chevron_right</span>
+        </button>
+
+        <button onclick="triggerFlashcardsGeneration()"
+          class="w-full flex items-center justify-between p-5 rounded-2xl prestige-gradient border border-white/10 hover:border-indigo-400/80 transition-all duration-300 group active:scale-95 shadow-lg shadow-black/20">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center transition-transform group-hover:scale-110 text-indigo-400">
+              <span class="material-symbols-outlined text-2xl">psychology</span>
+            </div>
+            <div class="flex flex-col items-start text-left">
+              <span class="font-bold text-lg text-white">🧠 Générer des Flashcards</span>
+              <span id="btn-flashcards-status" style="display:none;"
+                class="mt-1 text-[10px] text-emerald-400 font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-1"><span
+                  class="material-symbols-outlined text-[10px] font-variation-fill">check_circle</span> Déjà
+                généré</span>
+            </div>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-500 group-hover:text-indigo-400 transition-colors">chevron_right</span>
+        </button>
+
+        <button onclick="showToast('Module de quiz en cours de développement...')"
+          class="w-full flex items-center justify-between p-5 rounded-2xl prestige-gradient border border-white/10 hover:border-indigo-400/80 transition-all duration-300 group active:scale-95 shadow-lg shadow-black/20">
+          <div class="flex items-center gap-4">
+            <div
+              class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center transition-transform group-hover:scale-110">
+              <span class="material-symbols-outlined text-indigo-400 text-2xl">quiz</span>
+            </div>
+            <span class="font-bold text-lg text-white">📝 Lancer un Quiz</span>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-500 group-hover:text-indigo-400 transition-colors">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="mt-8 pt-4 flex justify-center">
+        <button onclick="closeFileActionMenu()"
+          class="text-slate-400 text-sm uppercase tracking-widest hover:text-white transition-colors py-2 px-6">
+          Annuler
+        </button>
+      </div>
     </div>
   </div>
 

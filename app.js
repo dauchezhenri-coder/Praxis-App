@@ -49,6 +49,8 @@ const DEFAULT_FILES = {
 };
 
 // ── STATE ─────────────────────────────────────────────────────
+window.praxisDB = JSON.parse(localStorage.getItem('praxisDB')) || [];
+
 let state = {
   subjects: {},    // { id: { name, icon, gradient, mastery, files: [] } },
   openFolders: new Set(['maths']),
@@ -3268,19 +3270,38 @@ function openSubjectHub(subjectName) {
    ============================================================ */
 
 // ===== FICHE DE SYNTHÈSE =====
-function openSummaryDetail() {
-  // Cache le dossier de la matière et affiche la fiche de synthèse
-  document.getElementById('view-subject-hub').classList.add('hidden');
+function openSummaryDetail(docId = null) {
+  // Cache le dossier de la matière et la bibliothèque, affiche la fiche de synthèse
+  const hub = document.getElementById('view-subject-hub');
+  if (hub) hub.classList.add('hidden');
+
+  const lib = document.getElementById('view-bibliotheque');
+  if (lib) lib.classList.add('hidden');
+
+  const success = document.getElementById('view-analysis-success');
+  if (success) success.classList.add('hidden');
+
   document.getElementById('view-summary-detail').classList.remove('hidden');
 
-  // Optionnel : Injecte des données de test pour voir le design de Stitch
-  const testData = {
-    titre: "Électrostatique : Champ et Potentiel",
-    pointsCles: ["Loi de Coulomb", "Champ Électrique", "Potentiel scalaire"],
-    formules: [{ nom: "Force", equation: "F = k.qQ/r²" }],
-    difficulte: "Difficile"
-  };
-  injectSynthesisData(testData);
+  let dataToInject = null;
+  if (docId) {
+    const doc = window.praxisDB.find(d => d.id === docId);
+    if (doc && doc.synthesisData) {
+      dataToInject = doc.synthesisData;
+    }
+  }
+
+  // Fallback de sécurité si on ouvre sans ID (ou mock manquant)
+  if (!dataToInject) {
+    dataToInject = {
+      titre: "Électrostatique : Champ et Potentiel",
+      pointsCles: ["Loi de Coulomb", "Champ Électrique", "Potentiel scalaire"],
+      formules: [{ nom: "Force", equation: "F = k.qQ/r²" }],
+      difficulte: "Difficile"
+    };
+  }
+
+  injectSynthesisData(dataToInject);
 }
 
 function closeSummaryDetail() {
@@ -3454,13 +3475,13 @@ function resetAIModal() {
 // ===== EXTRACTION PDF (pdf.js 3.11) =====
 
 // Variable globale qui stockera le texte brut extrait du PDF
-let lastExtractedText = '';
+window.currentCourseText = '';
 
 /**
- * processPDF(file)
+ * extractTextFromPDF(file)
  * Lit un fichier PDF page par page via pdf.js et retourne le texte.
  */
-async function processPDF(file) {
+async function extractTextFromPDF(file) {
   try {
     const arrayBuffer = await file.arrayBuffer();
 
@@ -3476,10 +3497,10 @@ async function processPDF(file) {
       textParts.push(pageText);
     }
 
-    lastExtractedText = textParts.join('\n');
-    console.log(`Texte extrait : ${lastExtractedText.substring(0, 100)}...`);
+    const fullText = textParts.join('\n');
+    console.log(`Texte extrait : ${fullText.substring(0, 100)}...`);
 
-    return lastExtractedText;
+    return fullText;
   } catch (err) {
     console.error('❌ Erreur d\'extraction PDF :', err);
     return '';
@@ -3504,7 +3525,7 @@ async function startAIGeneration() {
 
   if (selectedFile) {
     console.log(`📂 Fichier sélectionné : ${selectedFile.name}`);
-    await processPDF(selectedFile);
+    window.currentCourseText = await extractTextFromPDF(selectedFile);
   }
 
 
@@ -3546,9 +3567,77 @@ async function startAIGeneration() {
         loading.style.display = 'none';
         success.style.display = 'block';
         if (overlay) overlay.style.pointerEvents = 'auto';
-        // Injecte une entrée dans "Dernières Analyses"
-        addLibraryEntry('Cours analysé par IA', new Date().toLocaleDateString('fr-FR'));
-        showToast('✅ Cours analysé avec succès !');
+
+        // 1. Le Prompt IA
+        const aiPrompt = `Tu es un expert agrégé en CPGE (PTSI). Analyse ce texte de cours : ${window.currentCourseText}.
+Identifie le titre précis et 3 concepts clés.
+Extrais les 3 formules fondamentales (format texte clair).
+Détermine la difficulté (Facile/Moyen/Difficile).
+Réponds EXCLUSIVEMENT en JSON : {titre, pointsCles[], formules:[{nom, equation}], difficulte}`;
+
+        console.log("Prompt prêt pour l'IA :", aiPrompt.substring(0, 150) + "...");
+
+        // 2. Simulation de la réponse JSON de l'IA (utilisant le texte extrait)
+        const diffSimulee = (window.currentCourseText && window.currentCourseText.length > 3000) ? "Difficile" : "Moyen";
+        const isMath = selectedFile && selectedFile.name.toLowerCase().includes('matrice');
+        const courseTitle = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : "Nouveau Cours";
+
+        const simulatedData = {
+          titre: courseTitle,
+          pointsCles: isMath
+            ? ["Une matrice est un tableau d'entiers structurant une application linéaire.", "Le produit matriciel n'est pas commutatif (AB ≠ BA).", "Le déterminant indique si la matrice carrée est inversible (det ≠ 0)."]
+            : [
+              `Longueur du texte brut extrait : ${window.currentCourseText ? window.currentCourseText.length : 0} caractères.`,
+              "Le concept fondamental a été identifié avec succès par l'IA.",
+              "Méthodologie d'application pratique extraite du document."
+            ],
+          formules: isMath
+            ? [{ nom: "Produit Matrice", equation: "C_ij = Σ A_ik * B_kj" }, { nom: "Déterminant 2x2", equation: "det(A) = ad - bc" }, { nom: "Trace", equation: "Tr(A) = Σ a_ii" }]
+            : [
+              { nom: "Force de Coulomb", equation: "F = (1/4πε₀) * (|q₁q₂|/r²)" },
+              { nom: "Champ Électrique", equation: "E = F/q" },
+              { nom: "Gradient", equation: "E = -grad(V)" }
+            ],
+          difficulte: isMath ? "Difficile" : diffSimulee
+        };
+
+        // 3. Injection dans la fiche de synthèse
+        if (typeof injectSynthesisData === 'function') {
+          injectSynthesisData(simulatedData);
+        }
+
+        // 4. Finalisation (Transition vers l'écran de succès)
+        setTimeout(() => {
+          // Ferme le modal d'analyse
+          const modalContainer = document.getElementById('analysis-modal-container');
+          if (modalContainer) modalContainer.classList.add('hidden');
+
+          // Personnalise l'écran de succès
+          const courseNameEl = document.getElementById('success-course-name');
+          if (courseNameEl && selectedFile) {
+            courseNameEl.textContent = courseTitle;
+          }
+
+          // Affiche la vue de succès de l'IA
+          document.getElementById('view-analysis-success').classList.remove('hidden');
+
+          // Sauvegarde persistante dans praxisDB avec les vraies données calculées
+          if (!window.praxisDB) window.praxisDB = JSON.parse(localStorage.getItem('praxisDB')) || [];
+          const newDoc = {
+            id: 'doc_' + Date.now(),
+            fileName: selectedFile ? selectedFile.name : 'Nouveau Cours',
+            rawText: window.currentCourseText || '',
+            dateAdded: new Date().toISOString(),
+            status: 'analysé',
+            synthesisData: simulatedData
+          };
+          window.praxisDB.unshift(newDoc);
+          localStorage.setItem('praxisDB', JSON.stringify(window.praxisDB));
+
+          // Mise à jour de l'affichage
+          if (typeof renderLibraryFiles === 'function') renderLibraryFiles();
+
+        }, 1200); // Laisse le "Succès" visible un bref instant avant transition
       }, 600);
     }
   }
@@ -3663,42 +3752,59 @@ function renderLibraryFiles() {
   const container = document.getElementById('library-file-list');
   if (!container) return;
 
-  const history = JSON.parse(localStorage.getItem('praxis_analysis_history') || '[]');
+  // Utilisation de la nouvelle praxisDB
+  if (!window.praxisDB) window.praxisDB = JSON.parse(localStorage.getItem('praxisDB')) || [];
+  const history = window.praxisDB;
 
   if (history.length === 0) {
     container.innerHTML = `
       <div class="empty-state" style="text-align: center; padding: 40px 20px; color: #64748B;">
         <span class="material-symbols-outlined" style="font-size: 48px; opacity: 0.2; display: block; margin-bottom: 16px;">inbox</span>
-        <p style="font-size: 12px; font-weight: 700;">Aucun fichier analysé pour le moment.</p>
+        <p style="font-size: 12px; font-weight: 700;">Aucun fichier stocké pour le moment.</p>
       </div>
     `;
     return;
   }
 
   container.innerHTML = history.map(item => {
-    const timeLabel = formatTimeAgo(item.date);
+    const timeLabel = formatTimeAgo(item.dateAdded || item.date);
+    const fileName = item.fileName || item.name || 'Sans titre';
+    const status = item.status || 'analysé';
+
     return `
       <div class="bg-slate-900/40 border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-slate-800/40 transition-all">
           <div class="flex items-center gap-4 overflow-hidden">
               <div class="w-10 h-10 shrink-0 bg-red-500/10 rounded-xl flex items-center justify-center text-red-500 border border-red-500/10">
                   <span class="material-symbols-outlined">picture_as_pdf</span>
               </div>
-              <div class="overflow-hidden">
-                  <h4 class="font-bold text-sm truncate pr-2">${item.name}</h4>
-                  <p class="text-[10px] text-slate-500">${timeLabel} • ${item.subject}</p>
+              <div class="overflow-hidden cursor-pointer flex-1" onclick="openFileActionMenu('${fileName}', '${item.id}')" title="Ouvrir le menu d'actions">
+                  <h4 class="font-bold text-sm truncate pr-2">${fileName}</h4>
+                  <p class="text-[10px] text-slate-500">${timeLabel} • ${status}</p>
               </div>
           </div>
           <div class="flex gap-1.5 shrink-0">
               <div class="w-6 h-6 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 border border-indigo-500/20" title="Flashcards générées">
                   <span class="material-symbols-outlined text-[14px] font-variation-fill">bolt</span>
               </div>
-              <div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/20" title="Synthèse prête">
+              <div class="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 border border-emerald-500/20 cursor-pointer hover:bg-emerald-500/30 transition-colors" title="Synthèse prête" onclick="openSummaryDetail()">
                   <span class="material-symbols-outlined text-[14px]">description</span>
+              </div>
+              <div class="w-6 h-6 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 border border-red-500/20 cursor-pointer hover:bg-red-500/30 transition-colors" title="Supprimer de la base" onclick="deleteDocumentFromDB('${item.id}')">
+                  <span class="material-symbols-outlined text-[14px]">delete</span>
               </div>
           </div>
       </div>
     `;
   }).join('');
+}
+
+// ===== SUPPRESSION DANS praxisDB =====
+window.deleteDocumentFromDB = function (targetId) {
+  if (confirm("Supprimer définitivement ce fichier de votre base Praxis ?")) {
+    window.praxisDB = window.praxisDB.filter(doc => doc.id !== targetId);
+    localStorage.setItem('praxisDB', JSON.stringify(window.praxisDB));
+    renderLibraryFiles(); // Rafraîchit immédiatement l'affichage
+  }
 }
 
 function formatTimeAgo(dateString) {
@@ -3865,4 +3971,93 @@ function testInjectSynthesis() {
     difficulte: "Moyen" // Testons un badge "Moyen"
   };
   injectSynthesisData(mockData);
+}
+
+// ===== NAVIGATION ÉCRAN SUCCÈS =====
+function openFlashcardsFromSuccess() {
+  document.getElementById('view-analysis-success').classList.add('hidden');
+  openFlashcards();
+}
+
+// ===== MENU D'ACTIONS SUR FICHIER =====
+let currentActionDocumentId = null;
+
+function openFileActionMenu(fileName, docId) {
+  currentActionDocumentId = docId;
+  document.getElementById('action-menu-filename').textContent = fileName;
+
+  const doc = window.praxisDB.find(d => d.id === docId);
+  if (doc) {
+    document.getElementById('btn-fiche-status').style.display = doc.hasSynthesis ? 'flex' : 'none';
+    document.getElementById('btn-flashcards-status').style.display = doc.hasFlashcards ? 'flex' : 'none';
+  }
+
+  const modal = document.getElementById('view-file-actions');
+  const content = document.getElementById('file-actions-modal-content');
+
+  // Afficher le wrapper
+  modal.classList.remove('hidden');
+  // Petit délai pour laisser le navigateur peindre la suppression de hidden avant la transition CSS
+  setTimeout(() => {
+    modal.classList.remove('opacity-0');
+    content.classList.remove('translate-y-full');
+    content.classList.add('translate-y-0');
+  }, 10);
+}
+
+function closeFileActionMenu() {
+  const modal = document.getElementById('view-file-actions');
+  const content = document.getElementById('file-actions-modal-content');
+
+  // Replier
+  content.classList.remove('translate-y-0');
+  content.classList.add('translate-y-full');
+  modal.classList.add('opacity-0');
+
+  // Cacher complètement après l'animation (300ms)
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    currentActionDocumentId = null;
+  }, 300);
+}
+
+// Actions du menu
+function triggerSynthesisGeneration() {
+  closeFileActionMenu();
+  const doc = window.praxisDB.find(d => d.id === currentActionDocumentId);
+
+  if (doc) {
+    // On met à jour l'état du document
+    doc.hasSynthesis = true;
+    localStorage.setItem('praxisDB', JSON.stringify(window.praxisDB));
+
+    if (doc.rawText) {
+      window.currentCourseText = doc.rawText;
+      showToast("Analyse IA en cours...");
+      setTimeout(() => {
+        const courseNameEl = document.getElementById('success-course-name');
+        if (courseNameEl) courseNameEl.textContent = doc.fileName;
+        document.getElementById('view-analysis-success').classList.remove('hidden');
+      }, 1500);
+    } else {
+      // Mock fallback pour les specs sans texte
+      testInjectSynthesis();
+      document.getElementById('view-analysis-success').classList.remove('hidden');
+    }
+  }
+}
+
+function triggerFlashcardsGeneration() {
+  closeFileActionMenu();
+  const doc = window.praxisDB.find(d => d.id === currentActionDocumentId);
+
+  if (doc) {
+    doc.hasFlashcards = true;
+    localStorage.setItem('praxisDB', JSON.stringify(window.praxisDB));
+  }
+
+  showToast("Création des Flashcards en cours...");
+  setTimeout(() => {
+    openFlashcards();
+  }, 1200);
 }

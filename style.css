@@ -139,6 +139,33 @@
   transform: translateY(0);
 }
 
+/* Glassmorphism for Success View */
+.glass-card {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-success {
+  box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+}
+
+/* Glassmorphism for Action Menu Modal */
+.glass-premium {
+  background: rgba(45, 52, 73, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 15px rgba(192, 193, 255, 0.1);
+}
+
+.prestige-gradient {
+  background: radial-gradient(circle at 45% 0%, #2d3449 0%, #171f33 100%);
+}
+
 
 /* ────────────────────────────────────────────
    PLANNING — Variables & Timeline Classes
