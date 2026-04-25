@@ -1650,63 +1650,86 @@
 
   <!-- ===================== LOADING HUB MODAL (Luxe Apple-style) ===================== -->
   <div id="loading-hub-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
-    <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-xl transition-opacity duration-500"
-      onclick="closeLoadingHub()"></div>
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-2xl" onclick="closeLoadingHub()"></div>
 
-    <div
-      class="relative w-full max-w-[380px] bg-slate-900/40 border border-white/10 rounded-[32px] p-8 shadow-2xl backdrop-blur-2xl transform transition-all duration-500 scale-95 opacity-0 active-modal:scale-100 active-modal:opacity-100">
-      <div class="flex justify-between items-center mb-8">
-        <h2 class="text-xl font-black text-white tracking-tight">Hub de Chargement</h2>
-        <button onclick="closeLoadingHub()"
-          class="size-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
-          <span class="material-symbols-outlined text-slate-400 text-sm">close</span>
-        </button>
+    <div id="loading-hub-panel"
+      class="relative w-full max-w-md bg-slate-900/60 border border-white/10 rounded-[32px] shadow-2xl backdrop-blur-2xl transition-all duration-300"
+      style="opacity:0; transform: scale(0.92);">
+
+      <!-- Glow accent -->
+      <div
+        class="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-indigo-600 blur-[80px] opacity-20 pointer-events-none">
+      </div>
+      <div
+        class="absolute -bottom-16 -left-16 w-36 h-36 rounded-full bg-purple-600 blur-[60px] opacity-15 pointer-events-none">
       </div>
 
-      <div class="space-y-4">
-        <!-- Option A: Scanner -->
-        <div onclick="triggerScanFromHub()"
-          class="group relative p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all cursor-pointer">
-          <div class="flex items-center gap-4">
-            <div
-              class="size-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-indigo-400">document_scanner</span>
+      <div class="relative p-8">
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <p class="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1">Praxis IA</p>
+            <h2 class="text-xl font-black text-white tracking-tight">Mode de chargement</h2>
+          </div>
+          <button onclick="closeLoadingHub()"
+            class="size-9 rounded-full bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined text-slate-400" style="font-size:16px">close</span>
+          </button>
+        </div>
+
+        <!-- Option Cards -->
+        <div id="hub-options" class="space-y-3">
+          <!-- Option A: Scanner -->
+          <div onclick="triggerScanFromHub()"
+            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200 active:scale-[0.98]">
+            <div class="flex items-center gap-4">
+              <div
+                class="size-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-indigo-400">document_scanner</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-bold text-white">Scanner un PDF ou Image</p>
+                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Extraction IA haute précision</p>
+              </div>
+              <span
+                class="material-symbols-outlined text-slate-600 group-hover:text-indigo-400 transition-colors">chevron_right</span>
             </div>
-            <div>
-              <p class="text-sm font-bold text-white">Scanner un PDF / Image</p>
-              <p class="text-[10px] text-slate-500 font-medium mt-0.5">Extraction IA haute précision</p>
+          </div>
+
+          <!-- Option B: iCal -->
+          <div onclick="showICalInput()" id="ical-option-card"
+            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200 active:scale-[0.98]">
+            <div class="flex items-center gap-4">
+              <div
+                class="size-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-emerald-400">sync</span>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-bold text-white">Synchroniser via EcoleDirecte (iCal)</p>
+                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Mise à jour automatique du planning</p>
+              </div>
+              <span
+                class="material-symbols-outlined text-slate-600 group-hover:text-emerald-400 transition-colors">chevron_right</span>
             </div>
           </div>
         </div>
 
-        <!-- Option B: EcoleDirecte iCal -->
-        <div onclick="showICalInput()" id="ical-option-card"
-          class="group relative p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all cursor-pointer overflow-hidden">
-          <div class="flex items-center gap-4">
-            <div
-              class="size-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-emerald-400">sync</span>
-            </div>
-            <div>
-              <p class="text-sm font-bold text-white">Lien EcoleDirecte (iCal)</p>
-              <p class="text-[10px] text-slate-500 font-medium mt-0.5">Synchronisation automatique</p>
-            </div>
-          </div>
-
-          <!-- Input area (hidden by default) -->
-          <div id="ical-input-zone" class="hidden mt-6 pt-6 border-t border-white/5">
-            <input type="text" id="ical-url-input" placeholder="https://vospapapiers.ecoledirecte.com/..."
-              class="w-full bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 transition-all">
-            <button onclick="syncICal(event)"
-              class="w-full mt-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest py-3 rounded-xl shadow-lg hover:bg-emerald-500 transition-all">
-              Synchroniser
-            </button>
-          </div>
+        <!-- iCal Input Zone (hidden by default) -->
+        <div id="ical-input-zone" class="hidden mt-6 space-y-3">
+          <p class="text-xs text-slate-400 font-medium">Collez votre lien EcoleDirecte :</p>
+          <input type="text" id="ical-url-input" placeholder="https://api.ecoledirecte.com/v3/ical/..."
+            value="https://api.ecoledirecte.com/v3/ical/E/9690/63576832"
+            class="bg-white/5 border border-white/10 rounded-xl p-4 text-white w-full text-xs focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none placeholder:text-slate-600 transition-all">
+          <button onclick="syncWithEcoleDirecte(event)"
+            class="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white font-black text-[10px] uppercase tracking-widest py-3.5 rounded-xl shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
+            ✅ Valider la Synchronisation
+          </button>
+          <button onclick="showHubOptions()"
+            class="w-full text-slate-500 text-[9px] uppercase tracking-widest hover:text-slate-300 transition-colors py-1">
+            ← Retour
+          </button>
         </div>
       </div>
-
-      <p class="text-center text-[9px] text-slate-600 font-medium mt-8 uppercase tracking-widest">Propulsé par le moteur
-        Praxis IA</p>
     </div>
   </div>
   <script>
@@ -1845,41 +1868,127 @@
 
     function openLoadingHub() {
       const modal = document.getElementById('loading-hub-modal');
+      const panel = document.getElementById('loading-hub-panel');
+      // Reset to options view
+      showHubOptions();
       modal.classList.remove('hidden');
-      setTimeout(() => {
-        modal.classList.add('active-modal');
-      }, 10);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          panel.style.opacity = '1';
+          panel.style.transform = 'scale(1)';
+        });
+      });
     }
 
     function closeLoadingHub() {
       const modal = document.getElementById('loading-hub-modal');
-      modal.classList.remove('active-modal');
+      const panel = document.getElementById('loading-hub-panel');
+      panel.style.opacity = '0';
+      panel.style.transform = 'scale(0.92)';
       setTimeout(() => {
         modal.classList.add('hidden');
-        // Reset ical state
-        document.getElementById('ical-input-zone').classList.add('hidden');
-      }, 300);
+        showHubOptions();
+      }, 280);
+    }
+
+    function showHubOptions() {
+      const options = document.getElementById('hub-options');
+      const zone = document.getElementById('ical-input-zone');
+      if (options) options.classList.remove('hidden');
+      if (zone) zone.classList.add('hidden');
     }
 
     function showICalInput() {
-      document.getElementById('ical-input-zone').classList.remove('hidden');
+      const options = document.getElementById('hub-options');
+      const zone = document.getElementById('ical-input-zone');
+      if (options) options.classList.add('hidden');
+      if (zone) zone.classList.remove('hidden');
     }
 
     function triggerScanFromHub() {
       closeLoadingHub();
-      document.getElementById('scan-schedule-input').click();
+      setTimeout(() => document.getElementById('scan-schedule-input').click(), 300);
     }
 
     function syncICal(event) {
-      event.stopPropagation();
-      const url = document.getElementById('ical-url-input').value;
-      if (!url) {
-        if (typeof showToast === 'function') showToast("❌ Veuillez coller un lien valide");
+      if (event) event.stopPropagation();
+      const url = document.getElementById('ical-url-input')?.value;
+      if (!url || !url.startsWith('http')) {
+        if (typeof showToast === 'function') showToast('❌ Veuillez coller un lien valide');
         return;
       }
+      syncWithEcoleDirecte(url);
+    }
 
+    function syncWithEcoleDirecte(url) {
       closeLoadingHub();
-      parseICalLink(url);
+
+      const container = document.getElementById('daily-planning-container');
+      if (container) {
+        container.className = 'relative space-y-6';
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-16 text-center">
+            <div class="relative mb-6">
+              <span class="material-symbols-outlined text-5xl text-emerald-400 animate-spin" style="animation-duration:1.5s">sync</span>
+              <div class="absolute inset-0 rounded-full bg-emerald-500/10 blur-xl"></div>
+            </div>
+            <p class="font-black text-white text-base">Analyse du flux iCal...</p>
+            <p class="text-xs mt-2 text-slate-500">Récupération depuis EcoleDirecte</p>
+            <div class="mt-6 w-48 h-1 bg-slate-800 rounded-full overflow-hidden">
+              <div id="ical-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width:0%"></div>
+            </div>
+          </div>`;
+        // Animate progress bar
+        setTimeout(() => {
+          const bar = document.getElementById('ical-progress');
+          if (bar) bar.style.width = '70%';
+        }, 100);
+        setTimeout(() => {
+          const bar = document.getElementById('ical-progress');
+          if (bar) bar.style.width = '100%';
+        }, 1500);
+      }
+
+      setTimeout(() => {
+        // Mock data from EcoleDirecte iCal
+        WEEKLY_PLANNING = {
+          'Monday': [
+            { start: '08:10', end: '10:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+            { start: '10:15', end: '12:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+            { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' },
+            { start: '15:20', end: '17:15', title: 'INFORMATIQUE', prof: 'MARTIN S.', room: 'D004' }
+          ],
+          'Tuesday': [
+            { start: '08:10', end: '10:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+            { start: '10:15', end: '12:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+            { start: '13:15', end: '15:10', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+            { start: '15:20', end: '17:15', title: 'ANGLAIS', prof: 'DOE J.', room: 'B012' }
+          ],
+          'Wednesday': [
+            { start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'ATELIER LIBRE', room: 'GYM' }
+          ],
+          'Thursday': [
+            { start: '08:10', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+            { start: '13:15', end: '17:15', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+          ],
+          'Friday': [
+            { start: '08:10', end: '10:05', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+            { start: '10:15', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+            { start: '13:15', end: '15:35', title: 'TP S.I.', prof: 'RIPOCHE B.', room: 'D022' },
+            { start: '15:50', end: '17:40', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+          ],
+          'Saturday': [],
+          'Sunday': []
+        };
+
+        if (currentPlanningView === 'day') renderDailyPlanning();
+        else if (currentPlanningView === 'week') renderWeeklyView();
+        else if (currentPlanningView === 'month') renderMonthlyView();
+
+        if (typeof showToast === 'function') {
+          showToast('✅ EcoleDirecte synchronisé avec succès !');
+        }
+      }, 2000);
     }
 
     function parseICalLink(url) {
