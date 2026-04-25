@@ -549,42 +549,18 @@
     <div id="view-planning" class="flex-1 overflow-y-auto hidden bg-midnight pb-32">
       <!-- STITCH PRESTIGE CONTENT -->
       <div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto pb-48">
-        <header class="px-6 pt-4 pb-6">
-          <div class="flex justify-between items-start mb-6 gap-4">
-            <div class="flex-1">
-              <h1 class="text-xl font-bold tracking-tight text-white leading-tight">Friday Real-Time<br />PTSI Schedule
-                Sync</h1>
-            </div>
-            <div class="shrink-0 flex flex-col gap-2">
-              <button id="btn-scan-schedule"
-                class="bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-3 py-1.5 rounded-lg flex items-center justify-center gap-2 w-full transition-colors">
-                <span class="material-symbols-outlined text-[12px] text-indigo-400">qr_code_scanner</span>
-                <span class="text-[9px] font-bold text-indigo-300 uppercase tracking-tight">Scanner l'emploi du
-                  temps</span>
-              </button>
-              <input type="file" id="scan-schedule-input" class="hidden" accept="image/*,application/pdf" />
-              <button
-                class="bg-slate-800/50 hover:bg-slate-800 border border-white/5 px-3 py-1.5 rounded-lg flex items-center justify-center gap-2 w-full transition-colors">
-                <span class="material-symbols-outlined text-[12px] text-slate-400">download</span>
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Télécharger la semaine</span>
-              </button>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 p-3 bg-slate-900/40 rounded-xl border border-white/5">
-            <div
-              class="size-10 rounded-lg bg-indigo-600/20 flex items-center justify-center border border-indigo-500/30">
-              <span class="material-symbols-outlined text-indigo-400">calendar_today</span>
-            </div>
+        <header class="px-6 pt-6 pb-4">
+          <div class="flex justify-between items-center mb-6">
             <div>
-              <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Planning</p>
-              <button id="btn-open-hub" onclick="openLoadingHub()" class="flex items-center gap-1.5 mt-0.5 group">
-                <span
-                  class="text-xs font-black text-indigo-400 uppercase tracking-tight group-hover:text-indigo-300 transition-colors">Charger
-                  l'emploi du temps</span>
-                <span
-                  class="material-symbols-outlined text-[14px] text-indigo-500 group-hover:rotate-180 transition-transform duration-500">expand_more</span>
-              </button>
+              <h1 class="text-2xl font-black tracking-tight text-white" id="planning-day-title">Mon Planning</h1>
+              <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-0.5" id="planning-date-sub">
+                Chargez votre emploi du temps</p>
             </div>
+            <button id="btn-load-schedule" onclick="openLoadingHub()"
+              class="nav-button-active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[14px]">upload</span>
+              Charger
+            </button>
           </div>
 
           <!-- TAB BAR (Glassmorphism) -->
@@ -2156,17 +2132,23 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       // Rend la date dynamique pour TOUTE l'interface
-      const options = { weekday: 'long', day: 'numeric', month: 'long' };
-      const realDate = new Date().toLocaleDateString('fr-FR', options).toUpperCase();
+      const now = new Date();
+      const dayOptions = { weekday: 'long', day: 'numeric', month: 'long' };
+      const realDate = now.toLocaleDateString('fr-FR', dayOptions).toUpperCase();
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayLabels = { Sunday: 'Dimanche', Monday: 'Lundi', Tuesday: 'Mardi', Wednesday: 'Mercredi', Thursday: 'Jeudi', Friday: 'Vendredi', Saturday: 'Samedi' };
 
       try {
         // La barre tout en haut #current-date
         const globalHeader = document.getElementById('current-date');
         if (globalHeader) globalHeader.textContent = realDate;
 
-        // Le bloc sous "Planning du jour" (Celui de ta capture !)
-        const localHeader = document.querySelector('#view-planning header p.text-sm.font-bold');
-        if (localHeader) localHeader.textContent = realDate;
+        // Les nouveaux éléments du header Planning
+        const titleEl = document.getElementById('planning-day-title');
+        const subEl = document.getElementById('planning-date-sub');
+        const dayName = days[now.getDay()];
+        if (titleEl) titleEl.textContent = dayLabels[dayName] + ' — Mon Planning';
+        if (subEl) subEl.textContent = realDate;
       } catch (e) { }
 
       renderDailyPlanning();
