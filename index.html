@@ -71,7 +71,7 @@
         perspective: 1000px !important; 
         -webkit-perspective: 1000px !important; 
     }
-  /* --- STITCH PRESTIGE CLASSES (VERSION FINALE) --- */
+  /* --- STITCH PRESTIGE CLASSES (VERSION ULTIMATE) --- */
   @layer components {
     /* 1. Ligne verticale fine indigo très sombre (Guide) */
     .timeline-rail { @apply absolute left-4 top-0 bottom-0 w-px bg-indigo-950/50; }
@@ -94,7 +94,14 @@
     .calendar-grid > div { @apply border-r border-b border-white/5 aspect-square p-1 flex flex-col items-center justify-start; }
     .calendar-day-active { @apply relative ring-1 ring-indigo-500/50 bg-indigo-500/10 rounded-lg; }
     .calendar-day-active::after { content: ''; @apply absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full shadow-[0_0_8px_#6366f1]; }
-    .nav-button-active { @apply bg-indigo-600/20 text-indigo-400 shadow-[inset_0_2px_4px_rgba(99,102,241,0.3)] ring-1 ring-indigo-500/30; }
+    /* 7. Accents par matière (VERSION ULTIMATE) */
+    .card-accent-maths { @apply border-l-4 border-l-indigo-500 shadow-[0_0_20px_rgba(99,102,241,0.15)]; }
+    .card-accent-humanities { @apply border-l-4 border-l-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.15)]; }
+    .card-accent-exam { @apply border-l-4 border-l-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.15)]; }
+    /* 8. Bouton de navigation actif */
+    .nav-button-active { @apply bg-indigo-600/20 text-indigo-400 border-t border-t-white/20 shadow-[inset_0_2px_4px_rgba(99,102,241,0.3)] ring-1 ring-indigo-500/30; }
+    /* 9. Cercles de lueur en arrière-plan */
+    .bg-glow { @apply fixed w-[400px] h-[400px] blur-[120px] rounded-full opacity-10 pointer-events-none -z-10; }
   }
     #flashcard {
         position: relative;
@@ -155,6 +162,10 @@
 </head>
 
 <body>
+
+  <!-- Cercles de lueur d'ambiance (Stitch Ultimate) -->
+  <div class="bg-glow bg-indigo-600" style="top:-100px;left:-100px;"></div>
+  <div class="bg-glow bg-purple-600" style="bottom:-100px;right:-100px;"></div>
 
   <!-- ===================== APP WRAPPER ===================== -->
   <div class="app-wrapper">
@@ -1677,6 +1688,15 @@
       'Sunday': []
     };
 
+    // Utilitaire : retourne la classe d'accent CSS selon le nom du cours
+    function getAccentClass(title) {
+      const t = title.toUpperCase();
+      if (/MATH|PHYSIQUE|SII|S\.I\./.test(t)) return 'card-accent-maths';
+      if (/ANGLAIS|FRANCAIS|PHILO|HUMANIT/.test(t)) return 'card-accent-humanities';
+      if (/DS|COLLE|KHOLLE|EXAM/.test(t)) return 'card-accent-exam';
+      return '';
+    }
+
     function renderDailyPlanning() {
       const container = document.getElementById('daily-planning-container');
       if (!container) return;
@@ -1737,7 +1757,7 @@
 
           <!-- Colonne Droite (La Carte Prestige) -->
           <div class="flex-1">
-            <div class="course-card-prestige ${isCurrent ? 'course-card-active' : ''} overflow-hidden">
+            <div class="course-card-prestige ${isCurrent ? 'course-card-active' : ''} ${getAccentClass(course.title)} overflow-hidden">
               <div class="flex justify-between items-start">
                 <div>
                   <h3 class="text-prestige-title mb-1">${course.title}</h3>
@@ -1903,7 +1923,7 @@
         } else {
           schedule.forEach(course => {
             html += `
-              <div class="course-card-mini">
+              <div class="course-card-mini ${getAccentClass(course.title)}">
                 <div class="flex justify-between items-center mb-1">
                   <span class="text-[9px] font-black text-indigo-400">${course.start} – ${course.end}</span>
                   <span class="text-[9px] text-slate-500 font-bold">${course.room}</span>
