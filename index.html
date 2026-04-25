@@ -1920,9 +1920,117 @@
       syncWithEcoleDirecte(url);
     }
 
-    function syncWithEcoleDirecte(url) {
+    // ============================================================
+    // Real iCal Sync Engine
+    // ============================================================
+
+    // Persist & auto-fill the iCal URL from localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('praxis_ical_url');
+      if (saved) {
+        const input = document.getElementById('ical-url-input');
+        if (input) input.value = saved;
+      }
+    }, { once: true });
+
+    function parseICalDate(dtStr) {
+      // Handles DTSTART;TZID=...:20251015T081000 or DTSTART:20251015T081000Z
+      const raw = dtStr.includes(':') ? dtStr.split(':').pop() : dtStr;
+      const base = raw.replace('Z', '').trim();
+      // Format: YYYYMMDDTHHmmSS
+      const h = base.substring(9, 11);
+      const m = base.substring(11, 13);
+      return `${h}:${m}`;
+    }
+
+    function iCalDayKey(dtStr) {
+      const raw = dtStr.includes(':') ? dtStr.split(':').pop() : dtStr;
+      const base = raw.replace('Z', '').trim();
+      const year = parseInt(base.substring(0, 4));
+      const month = parseInt(base.substring(4, 6)) - 1;
+      const day = parseInt(base.substring(6, 8));
+      const d = new Date(year, month, day);
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      return days[d.getDay()];
+    }
+
+    function parseICalText(icsText) {
+      const result = {
+        Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: [], Saturday: [], Sunday: []
+      };
+
+      // Split into VEVENT blocks
+      const eventBlocks = icsText.split('BEGIN:VEVENT').slice(1);
+
+      eventBlocks.forEach(block => {
+        const lines = block.split(/\r?\n/);
+        let summary = '', dtstart = '', dtend = '', location = '', description = '';
+
+        // Unfold RFC5545 folded lines
+        const unfolded = [];
+        lines.forEach(line => {
+          if (line.startsWith(' ') || line.startsWith('\t')) {
+            if (unfolded.length) unfolded[unfolded.length - 1] += line.trim();
+          } else {
+            unfolded.push(line);
+          }
+        });
+
+        unfolded.forEach(line => {
+          if (line.startsWith('SUMMARY')) summary = line.split(':').slice(1).join(':').trim();
+          else if (line.startsWith('DTSTART')) dtstart = line;
+          else if (line.startsWith('DTEND')) dtend = line;
+          else if (line.startsWith('LOCATION')) location = line.split(':').slice(1).join(':').trim();
+          else if (line.startsWith('DESCRIPTION')) description = line.split(':').slice(1).join(':').trim();
+        });
+
+        if (!dtstart || !summary) return;
+
+        const dayKey = iCalDayKey(dtstart);
+        if (!result[dayKey]) return;
+
+        // Extract prof from DESCRIPTION (format: "Prof: NOM P." or first line)
+        let prof = '';
+        if (description) {
+          const profMatch = description.match(/prof[^:]*:\s*([^\n\\;]+)/i);
+          prof = profMatch ? profMatch[1].trim() : description.split(/[\\;,\n]/)[0].trim();
+        }
+
+        result[dayKey].push({
+          start: parseICalDate(dtstart),
+          end: parseICalDate(dtend),
+          title: summary.toUpperCase().replace(/\(.*?\)/g, '').trim(),
+          prof: prof || '—',
+          room: location || '—'
+        });
+      });
+
+      // Sort each day by start time
+      Object.keys(result).forEach(day => {
+        result[day].sort((a, b) => a.start.localeCompare(b.start));
+      });
+
+      return result;
+    }
+
+    async function syncWithEcoleDirecte(urlOrEvent) {
+      // Handle when called from onclick (event object is passed)
+      if (urlOrEvent && typeof urlOrEvent === 'object' && urlOrEvent.stopPropagation) {
+        urlOrEvent.stopPropagation();
+        urlOrEvent = document.getElementById('ical-url-input')?.value;
+      }
+      const url = urlOrEvent;
+      if (!url || !url.startsWith('http')) {
+        if (typeof showToast === 'function') showToast('❌ Lien iCal invalide');
+        return;
+      }
+
+      // Persist URL
+      localStorage.setItem('praxis_ical_url', url);
+
       closeLoadingHub();
 
+      // Show loading state
       const container = document.getElementById('daily-planning-container');
       if (container) {
         container.className = 'relative space-y-6';
@@ -1938,35 +2046,52 @@
               <div id="ical-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-1000" style="width:0%"></div>
             </div>
           </div>`;
-        // Animate progress bar
-        setTimeout(() => {
-          const bar = document.getElementById('ical-progress');
-          if (bar) bar.style.width = '70%';
-        }, 100);
-        setTimeout(() => {
-          const bar = document.getElementById('ical-progress');
-          if (bar) bar.style.width = '100%';
-        }, 1500);
+        setTimeout(() => { const b = document.getElementById('ical-progress'); if (b) b.style.width = '60%'; }, 100);
       }
 
-      setTimeout(() => {
-        // Mock data from EcoleDirecte iCal
+      // Proxy list — try direct first, then CORS proxies
+      const proxies = [
+        url,
+        `https://corsproxy.io/?${encodeURIComponent(url)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+      ];
+
+      let icsText = null;
+      for (const proxyUrl of proxies) {
+        try {
+          const res = await fetch(proxyUrl, { headers: { 'Accept': 'text/calendar' } });
+          if (res.ok) {
+            const text = await res.text();
+            if (text.includes('BEGIN:VCALENDAR')) {
+              icsText = text;
+              break;
+            }
+          }
+        } catch (e) {
+          // Try next proxy
+        }
+      }
+
+      const bar = document.getElementById('ical-progress');
+      if (bar) bar.style.width = '100%';
+
+      await new Promise(r => setTimeout(r, 400));
+
+      if (!icsText) {
+        if (typeof showToast === 'function') showToast('⚠️ Flux iCal inaccessible — données fictives chargées');
+        // Fallback to realistic mock
         WEEKLY_PLANNING = {
           'Monday': [
             { start: '08:10', end: '10:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
             { start: '10:15', end: '12:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
-            { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' },
-            { start: '15:20', end: '17:15', title: 'INFORMATIQUE', prof: 'MARTIN S.', room: 'D004' }
+            { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' }
           ],
           'Tuesday': [
             { start: '08:10', end: '10:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
             { start: '10:15', end: '12:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
-            { start: '13:15', end: '15:10', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
-            { start: '15:20', end: '17:15', title: 'ANGLAIS', prof: 'DOE J.', room: 'B012' }
+            { start: '13:15', end: '15:10', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' }
           ],
-          'Wednesday': [
-            { start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'ATELIER LIBRE', room: 'GYM' }
-          ],
+          'Wednesday': [{ start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'ATELIER LIBRE', room: 'GYM' }],
           'Thursday': [
             { start: '08:10', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
             { start: '13:15', end: '17:15', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
@@ -1977,18 +2102,16 @@
             { start: '13:15', end: '15:35', title: 'TP S.I.', prof: 'RIPOCHE B.', room: 'D022' },
             { start: '15:50', end: '17:40', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
           ],
-          'Saturday': [],
-          'Sunday': []
+          'Saturday': [], 'Sunday': []
         };
+      } else {
+        WEEKLY_PLANNING = parseICalText(icsText);
+        if (typeof showToast === 'function') showToast('✅ EcoleDirecte synchronisé avec succès !');
+      }
 
-        if (currentPlanningView === 'day') renderDailyPlanning();
-        else if (currentPlanningView === 'week') renderWeeklyView();
-        else if (currentPlanningView === 'month') renderMonthlyView();
-
-        if (typeof showToast === 'function') {
-          showToast('✅ EcoleDirecte synchronisé avec succès !');
-        }
-      }, 2000);
+      if (currentPlanningView === 'day') renderDailyPlanning();
+      else if (currentPlanningView === 'week') renderWeeklyView();
+      else if (currentPlanningView === 'month') renderMonthlyView();
     }
 
     function parseICalLink(url) {
