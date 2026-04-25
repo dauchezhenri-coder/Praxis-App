@@ -1959,6 +1959,21 @@
         Monday: [], Tuesday: [], Wednesday: [], Thursday: [], Friday: [], Saturday: [], Sunday: []
       };
 
+      // Helper: minutes from HH:MM
+      function toMinutes(t) {
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      }
+
+      // Helper: normalize title for dedup comparison (strip groups, numbers)
+      function normalizeTitle(t) {
+        return t.toUpperCase()
+          .replace(/\s*[-–]\s*(GROUPE|GRP|G)\s*\d+/g, '')
+          .replace(/\s*\d+$/, '')
+          .replace(/[^A-Z\s]/g, '')
+          .trim();
+      }
+
       // Split into VEVENT blocks
       const eventBlocks = icsText.split('BEGIN:VEVENT').slice(1);
 
@@ -1989,29 +2004,68 @@
         const dayKey = iCalDayKey(dtstart);
         if (!result[dayKey]) return;
 
-        // Extract prof from DESCRIPTION (format: "Prof: NOM P." or first line)
-        let prof = '';
-        if (description) {
-          const profMatch = description.match(/prof[^:]*:\s*([^\n\\;]+)/i);
-          prof = profMatch ? profMatch[1].trim() : description.split(/[\\;,\n]/)[0].trim();
+        const startTime = parseICalDate(dtstart);
+        const endTime = parseICalDate(dtend);
+
+        // Filter: skip events under 20 minutes (annotations, transitions)
+        if (endTime && startTime) {
+          const dur = toMinutes(endTime) - toMinutes(startTime);
+          if (dur < 20) return;
         }
 
+        // Extract prof from DESCRIPTION
+        let prof = '';
+        if (description) {
+          const clean = description.replace(/\\n/g, ' ').replace(/\\,/g, ',');
+          const profMatch = clean.match(/prof[^:]*:\s*([^\n;\\]+)/i);
+          prof = profMatch ? profMatch[1].trim() : clean.split(/[;,\n\\]/)[0].trim();
+          if (prof.length > 40) prof = prof.substring(0, 40);
+        }
+
+        const cleanTitle = summary
+          .toUpperCase()
+          .replace(/\(.*?\)/g, '')         // remove parenthesised notes
+          .replace(/\s*[-–]\s*(GROUPE|GRP|G)\s*\d+/gi, '') // remove group suffixes
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+
         result[dayKey].push({
-          start: parseICalDate(dtstart),
-          end: parseICalDate(dtend),
-          title: summary.toUpperCase().replace(/\(.*?\)/g, '').trim(),
+          start: startTime,
+          end: endTime,
+          title: cleanTitle,
           prof: prof || '—',
-          room: location || '—'
+          room: location.trim() || '—',
+          _normTitle: normalizeTitle(cleanTitle) // used for dedup only
         });
       });
 
-      // Sort each day by start time
+      // Sort + deduplicate each day
       Object.keys(result).forEach(day => {
+        // Sort by start time
         result[day].sort((a, b) => a.start.localeCompare(b.start));
+
+        // Deduplicate: if same start + same normalised title, merge (keep richest)
+        const deduped = [];
+        result[day].forEach(course => {
+          const existing = deduped.find(
+            c => c.start === course.start && c._normTitle === course._normTitle
+          );
+          if (existing) {
+            // Keep the one with the most info (prefer non-dash values)
+            if (existing.room === '—' && course.room !== '—') existing.room = course.room;
+            if (existing.prof === '—' && course.prof !== '—') existing.prof = course.prof;
+          } else {
+            deduped.push(course);
+          }
+        });
+
+        // Remove internal dedup helper field
+        result[day] = deduped.map(({ _normTitle, ...rest }) => rest);
       });
 
       return result;
     }
+
 
     async function syncWithEcoleDirecte(urlOrEvent) {
       // Handle when called from onclick (event object is passed)
