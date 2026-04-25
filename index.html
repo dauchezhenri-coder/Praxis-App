@@ -85,6 +85,16 @@
     /* 5. Point rouge avec battement de cœur "Live" */
     .live-indicator-dot { @apply absolute -left-[9px] w-5 h-5 flex items-center justify-center z-50; }
     .live-indicator-dot::after { content: ''; @apply w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full shadow-[0_0_15px_rgba(239,68,68,0.6)] animate-pulse; }
+    /* 6. Vues Semaine & Mois — Outils visuels Prestige */
+    .weekly-column { @apply w-[280px] shrink-0 bg-white/5 backdrop-blur-md rounded-[24px] border border-white/5 p-4 flex flex-col gap-3; }
+    .course-card-mini { @apply relative p-3 rounded-[16px] bg-slate-900/20 backdrop-blur-lg border border-white/10 shadow-sm transition-all; }
+    .course-card-mini .text-title { @apply text-white font-bold text-[10px] uppercase tracking-tight; }
+    .course-card-mini .text-meta { @apply text-slate-400 font-medium text-[8px]; }
+    .calendar-grid { @apply grid grid-cols-7 border-t border-l border-white/5; }
+    .calendar-grid > div { @apply border-r border-b border-white/5 aspect-square p-1 flex flex-col items-center justify-start; }
+    .calendar-day-active { @apply relative ring-1 ring-indigo-500/50 bg-indigo-500/10 rounded-lg; }
+    .calendar-day-active::after { content: ''; @apply absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full shadow-[0_0_8px_#6366f1]; }
+    .nav-button-active { @apply bg-indigo-600/20 text-indigo-400 shadow-[inset_0_2px_4px_rgba(99,102,241,0.3)] ring-1 ring-indigo-500/30; }
   }
     #flashcard {
         position: relative;
@@ -550,6 +560,17 @@
               <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Planning du jour</p>
               <p class="text-sm font-bold text-white uppercase tracking-tight">VENDREDI 27 FÉVRIER</p>
             </div>
+          </div>
+
+          <!-- TAB BAR (Glassmorphism) -->
+          <div
+            class="flex gap-2 p-1.5 bg-slate-900/40 backdrop-blur-md rounded-xl border border-white/10 mt-6 shadow-lg">
+            <button id="tab-planning-day" onclick="setPlanningView('day')"
+              class="flex-1 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all duration-300 bg-indigo-600/40 text-white shadow-[0_0_15px_rgba(99,102,241,0.2)] border border-indigo-500/30">Jour</button>
+            <button id="tab-planning-week" onclick="setPlanningView('week')"
+              class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all duration-300 text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50">Semaine</button>
+            <button id="tab-planning-month" onclick="setPlanningView('month')"
+              class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all duration-300 text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50">Mois</button>
           </div>
         </header>
         <main class="flex-1 px-6 relative">
@@ -1816,11 +1837,139 @@
         };
 
         // Refresh UI
-        renderDailyPlanning();
+        if (currentPlanningView === 'day') renderDailyPlanning();
+        else if (currentPlanningView === 'week') renderWeeklyView();
+        else if (currentPlanningView === 'month') renderMonthlyView();
+
         if (typeof showToast === 'function') {
           showToast('✅ Emploi du temps extrait avec succès !');
         }
       }, 2000);
+    }
+
+    let currentPlanningView = 'day';
+
+    function setPlanningView(view) {
+      currentPlanningView = view;
+
+      const tabs = ['day', 'week', 'month'];
+      const baseClass = "flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all duration-300 border";
+      tabs.forEach(t => {
+        const btn = document.getElementById('tab-planning-' + t);
+        if (!btn) return;
+        if (t === view) {
+          btn.className = baseClass + " nav-button-active";
+        } else {
+          btn.className = baseClass + " text-slate-400 border-transparent hover:text-white hover:bg-slate-800/50";
+        }
+      });
+
+      const container = document.getElementById('daily-planning-container');
+      if (container) container.innerHTML = '';
+
+      if (view === 'day') {
+        renderDailyPlanning();
+      } else if (view === 'week') {
+        renderWeeklyView();
+      } else if (view === 'month') {
+        renderMonthlyView();
+      }
+    }
+
+    function renderWeeklyView() {
+      const container = document.getElementById('daily-planning-container');
+      container.className = "flex gap-4 overflow-x-auto snap-x pb-4 pt-2";
+      container.style.cssText = "scrollbar-width: none;";
+
+      const workDays = [
+        { key: 'Monday', label: 'Lundi' },
+        { key: 'Tuesday', label: 'Mardi' },
+        { key: 'Wednesday', label: 'Mercredi' },
+        { key: 'Thursday', label: 'Jeudi' },
+        { key: 'Friday', label: 'Vendredi' }
+      ];
+
+      let html = '';
+      workDays.forEach(day => {
+        const schedule = WEEKLY_PLANNING[day.key] || [];
+        html += `<div class="weekly-column snap-center">`;
+        html += `<p class="text-prestige-meta uppercase tracking-widest mb-2">${day.label}</p>`;
+        if (schedule.length === 0) {
+          html += `
+            <div class="flex-1 flex flex-col items-center justify-center opacity-40 py-6">
+              <span class="material-symbols-outlined text-slate-500 mb-1">bedtime</span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase">Repos</span>
+            </div>`;
+        } else {
+          schedule.forEach(course => {
+            html += `
+              <div class="course-card-mini">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-[9px] font-black text-indigo-400">${course.start} – ${course.end}</span>
+                  <span class="text-[9px] text-slate-500 font-bold">${course.room}</span>
+                </div>
+                <div class="text-title">${course.title}</div>
+                <div class="text-meta mt-1 flex items-center gap-1">
+                  <span class="material-symbols-outlined" style="font-size:10px">account_circle</span>
+                  ${course.prof}
+                </div>
+              </div>`;
+          });
+        }
+        html += `</div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    function renderMonthlyView() {
+      const container = document.getElementById('daily-planning-container');
+      container.className = "relative flex flex-col gap-2";
+      container.style.cssText = "";
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth(); // 0-indexed
+      const today = now.getDate();
+
+      // First day of the month (0=Sun, 1=Mon … 6=Sat), convert to Mon-based (0=Mon)
+      const firstDayRaw = new Date(year, month, 1).getDay();
+      const firstDayMon = (firstDayRaw === 0) ? 6 : firstDayRaw - 1;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      // Map ISO weekday index (1=Mon=0 in our map) to WEEKLY_PLANNING key
+      const dayKeyMap = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const monthName = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+      const headerDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+      let html = `<h2 class="text-prestige-meta uppercase tracking-widest text-center mb-2">${monthName}</h2>`;
+      html += `<div class="calendar-grid bg-slate-900/20 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">`;
+
+      // Day headers
+      headerDays.forEach(d => {
+        html += `<div class="text-[8px] font-black tracking-widest uppercase text-slate-500 py-3 text-center border-transparent">${d}</div>`;
+      });
+
+      // Empty cells before first day
+      for (let i = 0; i < firstDayMon; i++) {
+        html += `<div></div>`;
+      }
+
+      // Day cells
+      for (let d = 1; d <= daysInMonth; d++) {
+        const colIndex = (firstDayMon + d - 1) % 7;
+        const dayKey = dayKeyMap[colIndex];
+        const hasClasses = (WEEKLY_PLANNING[dayKey] || []).length > 0;
+        const isToday = d === today;
+
+        html += `<div class="${isToday ? 'calendar-day-active' : ''}">`;
+        html += `<span class="text-[10px] font-bold ${isToday ? 'text-indigo-300' : 'text-slate-400'}">${d}</span>`;
+        if (hasClasses) {
+          html += `<div class="w-1 h-1 rounded-full bg-indigo-500 mt-1 shadow-[0_0_6px_#818cf8]"></div>`;
+        }
+        html += `</div>`;
+      }
+      html += `</div>`;
+      container.innerHTML = html;
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -1839,8 +1988,12 @@
       } catch (e) { }
 
       renderDailyPlanning();
-      // Refresh toutes les 60 secondes pour mettre à jour les états OPACITY et LIVE
-      setInterval(renderDailyPlanning, 60000);
+      // Refresh toutes les 60 secondes pour mettre à jour les états OPACITY et LIVE UNIQUEMENT SI ON EST EN VUE JOUR
+      setInterval(() => {
+        if (currentPlanningView === 'day') {
+          renderDailyPlanning();
+        }
+      }, 60000);
 
       initScanner();
     });
