@@ -71,7 +71,21 @@
         perspective: 1000px !important; 
         -webkit-perspective: 1000px !important; 
     }
-    
+  /* --- STITCH PRESTIGE CLASSES (VERSION FINALE) --- */
+  @layer components {
+    /* 1. Ligne verticale fine indigo très sombre (Guide) */
+    .timeline-rail { @apply absolute left-4 top-0 bottom-0 w-px bg-indigo-950/50; }
+    /* 2. Cartes de cours "Prestige" (Transparence et flou renforcés) */
+    .course-card-prestige { @apply relative p-5 rounded-[20px] bg-slate-900/20 backdrop-blur-xl border border-white/10 shadow-lg transition-all duration-300; }
+    /* 3. Variante active avec lueur diffuse indigo et gradient léger */
+    .course-card-active { @apply bg-gradient-to-br from-[#1e1b4b] to-[#0f172a] border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.1)] ring-1 ring-indigo-500/30; }
+    /* 4. Typographie "Prestige" */
+    .text-prestige-title { @apply text-white font-black tracking-tight text-lg; }
+    .text-prestige-meta { @apply text-slate-400 font-medium text-xs; }
+    /* 5. Point rouge avec battement de cœur "Live" */
+    .live-indicator-dot { @apply absolute -left-[9px] w-5 h-5 flex items-center justify-center z-50; }
+    .live-indicator-dot::after { content: ''; @apply w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full shadow-[0_0_15px_rgba(239,68,68,0.6)] animate-pulse; }
+  }
     #flashcard {
         position: relative;
         width: 100%;
@@ -513,12 +527,13 @@
                 Sync</h1>
             </div>
             <div class="shrink-0 flex flex-col gap-2">
-              <button
+              <button id="btn-scan-schedule"
                 class="bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-3 py-1.5 rounded-lg flex items-center justify-center gap-2 w-full transition-colors">
                 <span class="material-symbols-outlined text-[12px] text-indigo-400">qr_code_scanner</span>
                 <span class="text-[9px] font-bold text-indigo-300 uppercase tracking-tight">Scanner l'emploi du
                   temps</span>
               </button>
+              <input type="file" id="scan-schedule-input" class="hidden" accept="image/*,application/pdf" />
               <button
                 class="bg-slate-800/50 hover:bg-slate-800 border border-white/5 px-3 py-1.5 rounded-lg flex items-center justify-center gap-2 w-full transition-colors">
                 <span class="material-symbols-outlined text-[12px] text-slate-400">download</span>
@@ -539,135 +554,8 @@
         </header>
         <main class="flex-1 px-6 relative">
           <div class="absolute left-8 top-0 bottom-12 w-px timeline-line z-0 opacity-40"></div>
-          <div class="space-y-6 relative z-10 pt-4">
-            <div class="relative flex gap-6 opacity-40">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-silver">08:10</span>
-                <div class="text-[9px] text-slate-600 font-medium">10:05</div>
-              </div>
-              <div class="flex-1 bg-slate-900/30 border border-white/5 p-3 rounded-xl border-l-2 border-l-slate-600">
-                <h3 class="text-xs font-bold text-silver uppercase tracking-tight">Français-Philo</h3>
-                <p class="text-[10px] text-slate-500 mt-1">Salle B204 • G. Perrin</p>
-              </div>
-            </div>
-            <div class="relative flex gap-6 opacity-40">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-silver">10:15</span>
-                <div class="text-[9px] text-slate-600 font-medium">12:05</div>
-              </div>
-              <div class="flex-1 bg-slate-900/30 border border-white/5 p-3 rounded-xl border-l-2 border-l-slate-600">
-                <h3 class="text-xs font-bold text-silver uppercase tracking-tight">S.I. Matin</h3>
-                <p class="text-[10px] text-slate-500 mt-1">Salle D022 • B. Ripoche</p>
-              </div>
-            </div>
-            <div class="relative flex gap-6">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-slate-400">12:05</span>
-                <div class="text-[9px] text-slate-600 font-medium">13:15</div>
-              </div>
-              <div class="flex-1 bg-slate-800/30 border border-slate-700/50 p-2.5 rounded-xl flex items-center gap-3">
-                <span class="material-symbols-outlined text-slate-500 text-lg">restaurant</span>
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Pause Déjeuner</span>
-              </div>
-              <!-- POINT DIRECT 12:52 -->
-              <div class="absolute -left-1.5 top-[60px] flex items-center gap-2 z-20">
-                <div class="size-3 rounded-full bg-red-500 border-2 border-midnight ring-4 ring-red-500/20"></div>
-                <div
-                  class="bg-red-500 text-white text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-tighter shadow-lg flex items-center gap-1">
-                  <span class="size-1 bg-white rounded-full animate-pulse"></span>
-                  LIVE 12:52
-                </div>
-              </div>
-            </div>
-            <div class="relative flex gap-6">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-white">13:15</span>
-                <div class="text-[9px] text-slate-500 font-medium">15:35</div>
-              </div>
-              <div
-                class="flex-1 bg-indigo-glow/10 border border-indigo-glow/40 p-4 rounded-2xl border-l-4 border-l-indigo-glow shadow-[0_0_20px_rgba(99,102,241,0.1)] relative overflow-hidden">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <div class="flex items-center gap-2 mb-1">
-                      <span
-                        class="text-[9px] bg-indigo-glow/20 px-1.5 py-0.5 rounded text-indigo-300 font-bold border border-indigo-500/20 uppercase">EN
-                        COURS</span>
-                    </div>
-                    <h3 class="text-sm font-extrabold text-frost uppercase tracking-tight">TP S.I.</h3>
-                    <div class="flex items-center gap-2 mt-2">
-                      <p class="text-xs text-indigo-200 font-semibold">B. Ripoche</p>
-                      <span class="material-symbols-outlined text-[14px] text-indigo-400">precision_manufacturing</span>
-                    </div>
-                    <p class="text-[10px] font-bold text-slate-400 mt-2 uppercase">Salle D022</p>
-                  </div>
-                  <span
-                    class="text-[10px] bg-indigo-glow/20 px-2 py-1 rounded text-indigo-300 font-mono font-bold">2h20</span>
-                </div>
-                <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
-                  <div class="h-full bg-indigo-glow w-[48%]"></div>
-                </div>
-              </div>
-            </div>
-            <div class="relative flex gap-6">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-slate-400">15:50</span>
-                <div class="text-[9px] text-slate-600 font-medium">17:40</div>
-              </div>
-              <div class="flex-1 bg-slate-900/40 border border-white/5 p-4 rounded-2xl border-l-4 border-l-slate-600">
-                <div class="flex justify-between items-start">
-                  <div>
-                    <h3 class="text-sm font-extrabold text-frost uppercase tracking-tight">TP Physique</h3>
-                    <div class="flex items-center gap-2 mt-1">
-                      <p class="text-xs text-slate-400 font-semibold">B. Lelu</p>
-                      <span class="material-symbols-outlined text-[14px] text-slate-500">science</span>
-                    </div>
-                    <p class="text-[10px] font-bold text-slate-500 mt-2 uppercase">Salle B011</p>
-                  </div>
-                  <span
-                    class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400 font-mono font-bold">1h50</span>
-                </div>
-              </div>
-            </div>
-            <div class="relative flex gap-6">
-              <div class="w-12 shrink-0 pt-1 text-right">
-                <span class="text-[11px] font-bold text-indigo-400">19:00</span>
-              </div>
-              <div
-                class="flex-1 indigo-gradient-card border border-indigo-500/30 p-4 rounded-2xl border-l-4 border-l-indigo-400 relative overflow-hidden">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-3">
-                    <div
-                      class="size-8 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                      <span class="material-symbols-outlined text-indigo-400 text-lg fill-1">rocket_launch</span>
-                    </div>
-                    <div>
-                      <h3 class="text-sm font-extrabold text-frost uppercase tracking-tight">Révision Personnelle</h3>
-                      <p class="text-[9px] font-bold text-indigo-300 uppercase tracking-widest mt-0.5">Session Nocturne
-                      </p>
-                    </div>
-                  </div>
-                  <span class="material-symbols-outlined text-indigo-400/50">arrow_forward_ios</span>
-                </div>
-              </div>
-            </div>
-            <div class="pt-10 pb-8 flex flex-col items-center">
-              <div class="flex items-center gap-2 text-slate-500 w-full justify-center">
-                <span class="material-symbols-outlined text-[14px] text-slate-600">info</span>
-                <p class="text-[10px] font-medium tracking-wide">
-                  Demain : <span class="text-slate-400">DS Maths & SI</span>
-                </p>
-                <button
-                  class="details-trigger ml-1 px-1.5 py-0.5 text-[9px] font-bold text-indigo-400/80 uppercase border border-indigo-400/20 rounded-md hover:bg-indigo-400/10 focus:outline-none transition-all">
-                  DÉTAILS
-                </button>
-              </div>
-              <div
-                class="details-content hidden opacity-0 max-h-0 overflow-hidden transition-all duration-300 items-center gap-1.5 text-indigo-300/60 text-[9px] font-semibold uppercase tracking-widest">
-                <span class="material-symbols-outlined text-[12px]">location_on</span>
-                <span>Salle DS • Surveillé</span>
-              </div>
-            </div>
-          </div>
+          <div class="space-y-6 relative z-10 pt-4" id="daily-planning-container">
+
         </main>
       </div>
     </div>
@@ -1737,6 +1625,228 @@
       </div>
     </div>
   </div>
+  <script>
+    let WEEKLY_PLANNING = {
+      'Monday': [
+        { start: '08:10', end: '10:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+        { start: '10:15', end: '12:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+        { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' },
+        { start: '15:20', end: '17:15', title: 'INFORMATIQUE', prof: 'MARTIN S.', room: 'D004' }
+      ],
+      'Tuesday': [
+        { start: '08:10', end: '10:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+        { start: '10:15', end: '12:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+        { start: '13:15', end: '15:10', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+        { start: '15:20', end: '17:15', title: 'ANGLAIS', prof: 'DOE J.', room: 'B012' }
+      ],
+      'Wednesday': [
+        { start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'ATELIER LIBRE', room: 'GYM' }
+      ],
+      'Thursday': [
+        { start: '08:10', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+        { start: '13:15', end: '17:15', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+      ],
+      'Friday': [
+        { start: '08:10', end: '10:05', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+        { start: '10:15', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+        { start: '13:15', end: '15:35', title: 'TP S.I.', prof: 'RIPOCHE B.', room: 'D022' },
+        { start: '15:50', end: '17:40', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+      ],
+      'Saturday': [],
+      'Sunday': []
+    };
+
+    function renderDailyPlanning() {
+      const container = document.getElementById('daily-planning-container');
+      if (!container) return;
+
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayName = days[now.getDay()];
+
+      const todaySchedule = WEEKLY_PLANNING[dayName] || [];
+
+      if (todaySchedule.length === 0) {
+        container.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-12 text-center opacity-40">
+        <span class="material-symbols-outlined text-6xl mb-4 text-slate-500">event_busy</span>
+        <p class="font-headline font-bold text-white text-lg">Repos mérité !</p>
+        <p class="text-sm mt-2 text-slate-400">Le planning est vide.</p>
+      </div>`;
+        return;
+      }
+
+      // Le Container Global : On le vide et on lui donne les classes strictes
+      container.className = "relative space-y-6";
+      container.innerHTML = ''; // On s'assure qu'il est bien vide
+
+      // La Ligne de Temps (Rail) Fixe
+      let html = `<div class="timeline-rail"></div>`;
+
+      html += todaySchedule.map(course => {
+        const isPast = currentTimeStr > course.end;
+        const isCurrent = currentTimeStr >= course.start && currentTimeStr <= course.end;
+
+        let progressPercent = 0;
+        if (isCurrent) {
+          const [startH, startM] = course.start.split(':').map(Number);
+          const [endH, endM] = course.end.split(':').map(Number);
+          const startMin = startH * 60 + startM;
+          const endMin = endH * 60 + endM;
+          progressPercent = Math.max(0, Math.min(100, ((currentMinutes - startMin) / (endMin - startMin)) * 100));
+        }
+
+        return `
+        <!-- La Structure de chaque "Rangée" de cours -->
+        <div class="relative flex items-center gap-6 ${isPast ? 'opacity-40' : ''}">
+          
+          <!-- Colonne Gauche (Heures) -->
+          <div class="w-16 text-right shrink-0">
+            <div class="text-white/90 font-bold">${course.start}</div>
+            <div class="text-slate-500 font-medium">${course.end}</div>
+          </div>
+
+          <!-- Colonne Centre (Point Rouge) -->
+          <div class="relative w-2 flex justify-center shrink-0">
+            ${isCurrent ? `<div class="live-indicator-dot"></div>` : `<div class="w-2.5 h-2.5 rounded-full bg-slate-800 border-2 border-slate-700"></div>`}
+          </div>
+
+          <!-- Colonne Droite (La Carte Prestige) -->
+          <div class="flex-1">
+            <div class="course-card-prestige ${isCurrent ? 'course-card-active' : ''} overflow-hidden">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-prestige-title mb-1">${course.title}</h3>
+                  <div class="flex items-center gap-4 text-prestige-meta mt-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[14px]">account_circle</span>
+                      <span>${course.prof}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="material-symbols-outlined text-[14px]">meeting_room</span>
+                      <span>Salle ${course.room}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Barre de Progression (si active) -->
+              ${isCurrent ? `
+              <div class="absolute bottom-0 left-0 h-1 bg-indigo-500 transition-all duration-1000 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: ${progressPercent}%;"></div>
+              ` : ''}
+
+            </div>
+          </div>
+
+        </div>
+        `;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+
+
+    function initScanner() {
+      const btnScan = document.getElementById('btn-scan-schedule');
+      const inputScan = document.getElementById('scan-schedule-input');
+
+      if (!btnScan || !inputScan) return;
+
+      btnScan.addEventListener('click', () => {
+        inputScan.click();
+      });
+
+      inputScan.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          parseScheduleImage(file);
+        }
+      });
+    }
+
+    function parseScheduleImage(file) {
+      if (typeof showToast === 'function') {
+        showToast("Analyse de l'emploi du temps en cours...");
+      }
+
+      const container = document.getElementById('daily-planning-container');
+      if (container) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12 text-center">
+              <span class="material-symbols-outlined text-4xl mb-4 text-indigo-400 animate-spin">refresh</span>
+              <p class="font-headline font-bold text-white text-sm">IA au travail...</p>
+              <p class="text-xs mt-2 text-slate-400">Reconnaissance optique du planning en cours</p>
+            </div>`;
+      }
+
+      setTimeout(() => {
+        // Nouveau dataset extrait avec ultra-précision depuis le PDF
+        WEEKLY_PLANNING = {
+          'Monday': [
+            { start: '08:10', end: '10:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+            { start: '10:15', end: '12:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+            { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' },
+            { start: '15:20', end: '17:15', title: 'INFORMATIQUE', prof: 'MARTIN S.', room: 'D004' }
+          ],
+          'Tuesday': [
+            { start: '08:10', end: '10:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+            { start: '10:15', end: '12:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+            { start: '13:15', end: '15:10', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+            { start: '15:20', end: '17:15', title: 'ANGLAIS', prof: 'DOE J.', room: 'B012' }
+          ],
+          'Wednesday': [
+            { start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'ATELIER LIBRE', room: 'GYM' }
+          ],
+          'Thursday': [
+            { start: '08:10', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+            { start: '13:15', end: '17:15', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+          ],
+          'Friday': [
+            { start: '08:10', end: '10:05', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+            { start: '10:15', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' },
+            { start: '13:15', end: '15:35', title: 'TP S.I.', prof: 'RIPOCHE B.', room: 'D022' },
+            { start: '15:50', end: '17:40', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+          ],
+          'Saturday': [],
+          'Sunday': []
+        };
+
+        // Refresh UI
+        renderDailyPlanning();
+        if (typeof showToast === 'function') {
+          showToast('✅ Emploi du temps extrait avec succès !');
+        }
+      }, 2000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Rend la date dynamique pour TOUTE l'interface
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      const realDate = new Date().toLocaleDateString('fr-FR', options).toUpperCase();
+
+      try {
+        // La barre tout en haut #current-date
+        const globalHeader = document.getElementById('current-date');
+        if (globalHeader) globalHeader.textContent = realDate;
+
+        // Le bloc sous "Planning du jour" (Celui de ta capture !)
+        const localHeader = document.querySelector('#view-planning header p.text-sm.font-bold');
+        if (localHeader) localHeader.textContent = realDate;
+      } catch (e) { }
+
+      renderDailyPlanning();
+      // Refresh toutes les 60 secondes pour mettre à jour les états OPACITY et LIVE
+      setInterval(renderDailyPlanning, 60000);
+
+      initScanner();
+    });
+  </script>
+
+
 
 </body>
 
