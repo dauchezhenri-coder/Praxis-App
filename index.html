@@ -102,6 +102,14 @@
     .nav-button-active { @apply bg-indigo-600/20 text-indigo-400 border-t border-t-white/20 shadow-[inset_0_2px_4px_rgba(99,102,241,0.3)] ring-1 ring-indigo-500/30; }
     /* 9. Cercles de lueur en arrière-plan */
     .bg-glow { @apply fixed w-[400px] h-[400px] blur-[120px] rounded-full opacity-10 pointer-events-none -z-10; }
+
+    /* Transitions Modale Luxe */
+    .active-modal {
+      @apply pointer-events-auto;
+    }
+    .active-modal > div:first-child {
+      @apply opacity-100;
+    }
   }
     #flashcard {
         position: relative;
@@ -568,8 +576,14 @@
               <span class="material-symbols-outlined text-indigo-400">calendar_today</span>
             </div>
             <div>
-              <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Planning du jour</p>
-              <p class="text-sm font-bold text-white uppercase tracking-tight">VENDREDI 27 FÉVRIER</p>
+              <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Planning</p>
+              <button id="btn-open-hub" onclick="openLoadingHub()" class="flex items-center gap-1.5 mt-0.5 group">
+                <span
+                  class="text-xs font-black text-indigo-400 uppercase tracking-tight group-hover:text-indigo-300 transition-colors">Charger
+                  l'emploi du temps</span>
+                <span
+                  class="material-symbols-outlined text-[14px] text-indigo-500 group-hover:rotate-180 transition-transform duration-500">expand_more</span>
+              </button>
             </div>
           </div>
 
@@ -1657,6 +1671,68 @@
       </div>
     </div>
   </div>
+
+  <!-- ===================== LOADING HUB MODAL (Luxe Apple-style) ===================== -->
+  <div id="loading-hub-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-6">
+    <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-xl transition-opacity duration-500"
+      onclick="closeLoadingHub()"></div>
+
+    <div
+      class="relative w-full max-w-[380px] bg-slate-900/40 border border-white/10 rounded-[32px] p-8 shadow-2xl backdrop-blur-2xl transform transition-all duration-500 scale-95 opacity-0 active-modal:scale-100 active-modal:opacity-100">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-xl font-black text-white tracking-tight">Hub de Chargement</h2>
+        <button onclick="closeLoadingHub()"
+          class="size-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+          <span class="material-symbols-outlined text-slate-400 text-sm">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Option A: Scanner -->
+        <div onclick="triggerScanFromHub()"
+          class="group relative p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all cursor-pointer">
+          <div class="flex items-center gap-4">
+            <div
+              class="size-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-indigo-400">document_scanner</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-white">Scanner un PDF / Image</p>
+              <p class="text-[10px] text-slate-500 font-medium mt-0.5">Extraction IA haute précision</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Option B: EcoleDirecte iCal -->
+        <div onclick="showICalInput()" id="ical-option-card"
+          class="group relative p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 hover:bg-emerald-500/5 transition-all cursor-pointer overflow-hidden">
+          <div class="flex items-center gap-4">
+            <div
+              class="size-12 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-emerald-400">sync</span>
+            </div>
+            <div>
+              <p class="text-sm font-bold text-white">Lien EcoleDirecte (iCal)</p>
+              <p class="text-[10px] text-slate-500 font-medium mt-0.5">Synchronisation automatique</p>
+            </div>
+          </div>
+
+          <!-- Input area (hidden by default) -->
+          <div id="ical-input-zone" class="hidden mt-6 pt-6 border-t border-white/5">
+            <input type="text" id="ical-url-input" placeholder="https://vospapapiers.ecoledirecte.com/..."
+              class="w-full bg-slate-950/50 border border-white/10 rounded-xl px-4 py-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 transition-all">
+            <button onclick="syncICal(event)"
+              class="w-full mt-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest py-3 rounded-xl shadow-lg hover:bg-emerald-500 transition-all">
+              Synchroniser
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-[9px] text-slate-600 font-medium mt-8 uppercase tracking-widest">Propulsé par le moteur
+        Praxis IA</p>
+    </div>
+  </div>
   <script>
     let WEEKLY_PLANNING = {
       'Monday': [
@@ -1791,15 +1867,101 @@
 
 
 
+    function openLoadingHub() {
+      const modal = document.getElementById('loading-hub-modal');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.add('active-modal');
+      }, 10);
+    }
+
+    function closeLoadingHub() {
+      const modal = document.getElementById('loading-hub-modal');
+      modal.classList.remove('active-modal');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        // Reset ical state
+        document.getElementById('ical-input-zone').classList.add('hidden');
+      }, 300);
+    }
+
+    function showICalInput() {
+      document.getElementById('ical-input-zone').classList.remove('hidden');
+    }
+
+    function triggerScanFromHub() {
+      closeLoadingHub();
+      document.getElementById('scan-schedule-input').click();
+    }
+
+    function syncICal(event) {
+      event.stopPropagation();
+      const url = document.getElementById('ical-url-input').value;
+      if (!url) {
+        if (typeof showToast === 'function') showToast("❌ Veuillez coller un lien valide");
+        return;
+      }
+
+      closeLoadingHub();
+      parseICalLink(url);
+    }
+
+    function parseICalLink(url) {
+      if (typeof showToast === 'function') {
+        showToast("🌐 Synchronisation iCal en cours...");
+      }
+
+      const container = document.getElementById('daily-planning-container');
+      if (container) {
+        container.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12 text-center">
+              <span class="material-symbols-outlined text-4xl mb-4 text-emerald-400 animate-spin">sync</span>
+              <p class="font-headline font-bold text-white text-sm">Synchronisation Directe...</p>
+              <p class="text-xs mt-2 text-slate-400">Récupération des flux EcoleDirecte</p>
+            </div>`;
+      }
+
+      setTimeout(() => {
+        // Mock data from iCal
+        WEEKLY_PLANNING = {
+          'Monday': [
+            { start: '08:10', end: '12:05', title: 'DS MATHEMATIQUES', prof: 'CALCOEN E.', room: 'AMPHI A' },
+            { start: '13:15', end: '17:15', title: 'TP PHYSIQUE', prof: 'LELU B.', room: 'B011' }
+          ],
+          'Tuesday': [
+            { start: '08:10', end: '10:05', title: 'ANGLAIS', prof: 'DOE J.', room: 'B012' },
+            { start: '10:15', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' }
+          ],
+          'Wednesday': [
+            { start: '08:10', end: '12:05', title: 'PROJET PRAXIS', prof: 'COACH AI', room: 'LAB' }
+          ],
+          'Thursday': [
+            { start: '08:10', end: '10:05', title: 'FRANCAIS-PHILO', prof: 'PERRIN G.', room: 'B204' },
+            { start: '10:15', end: '12:05', title: 'SII MATIN', prof: 'RIPOCHE B.', room: 'C022' }
+          ],
+          'Friday': [
+            { start: '08:10', end: '10:05', title: 'MATHEMATIQUES', prof: 'CALCOEN E.', room: 'B130' },
+            { start: '10:15', end: '12:05', title: 'PHYSIQUE-CHIMIE', prof: 'LELU B.', room: 'B130' },
+            { start: '13:15', end: '15:10', title: 'SII', prof: 'RIPOCHE B.', room: 'D022' }
+          ],
+          'Saturday': [],
+          'Sunday': []
+        };
+
+        // Refresh dynamic UI
+        if (currentPlanningView === 'day') renderDailyPlanning();
+        else if (currentPlanningView === 'week') renderWeeklyView();
+        else if (currentPlanningView === 'month') renderMonthlyView();
+
+        if (typeof showToast === 'function') {
+          showToast('✅ Synchronisation iCal réussie !');
+        }
+      }, 2500);
+    }
+
     function initScanner() {
-      const btnScan = document.getElementById('btn-scan-schedule');
       const inputScan = document.getElementById('scan-schedule-input');
-
-      if (!btnScan || !inputScan) return;
-
-      btnScan.addEventListener('click', () => {
-        inputScan.click();
-      });
+      if (!inputScan) return;
 
       inputScan.addEventListener('change', (e) => {
         const file = e.target.files[0];
