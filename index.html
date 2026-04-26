@@ -1064,8 +1064,7 @@
           <span class="schedule-scanner__subtitle">Glissez votre PDF ici ou parcourez vos fichiers</span>
         </div>
         <input type="file" id="scheduleInput" accept=".pdf,image/*" style="display:none;" />
-        <input type="file" id="pdf-upload" accept=".pdf,application/pdf" style="display:none;"
-          onchange="handlePDFUpload(event)" />
+        <input type="file" id="pdf-upload" accept="*" style="display:none;" onchange="handlePDFUpload(event)" />
       </div>
     </div>
   </div>
@@ -2131,6 +2130,11 @@
     function handlePDFUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
+
+      if (!file.name.toLowerCase().endsWith('.pdf')) {
+        alert("Seuls les fichiers PDF sont acceptés pour le moment.");
+        return;
+      }
 
       alert('Fichier détecté : ' + file.name);
 
