@@ -110,6 +110,28 @@
     .active-modal > div:first-child {
       @apply opacity-100;
     }
+
+    /* --- PRAXIS — Finitions Pixel Perfect (Correction & Symétrie) --- */
+    .btn-load-pill {
+      @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full 
+             bg-white/5 border border-white/10 text-slate-400 
+             text-[10px] font-medium transition-all duration-200
+             hover:bg-white/10 hover:text-white;
+    }
+    .btn-load-pill::before {
+      content: '\e2c3'; /* upload_file */
+      @apply font-['Material_Symbols_Outlined'] text-[14px];
+    }
+    .repos-container {
+      @apply flex flex-col items-center justify-center w-full min-h-[400px] 
+             text-center mx-auto p-0 m-0 !important;
+    }
+    .planning-title-row {
+      @apply flex items-center justify-between w-full mb-8;
+    }
+    .planning-title-text {
+      @apply text-white font-black text-xl uppercase tracking-tighter;
+    }
   }
     #flashcard {
         position: relative;
@@ -550,17 +572,11 @@
       <!-- STITCH PRESTIGE CONTENT -->
       <div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto pb-48">
         <header class="px-6 pt-6 pb-4">
-          <div class="flex justify-between items-center mb-6">
-            <div>
-              <h1 class="text-2xl font-black tracking-tight text-white" id="planning-day-title">Mon Planning</h1>
-              <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-0.5" id="planning-date-sub">
-                Chargez votre emploi du temps</p>
-            </div>
-            <button id="btn-load-schedule" onclick="openLoadingHub()"
-              class="nav-button-active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center gap-2">
-              <span class="material-symbols-outlined text-[14px]">upload</span>
-              Charger
-            </button>
+          <div class="planning-title-row">
+            <h1 id="current-day-title" class="planning-title-text">
+              Samedi <span class="text-indigo-500/50 block text-[10px] tracking-[0.3em] font-bold">Mon Planning</span>
+            </h1>
+            <button class="btn-load-pill" onclick="openLoadingHub()">Charger</button>
           </div>
 
           <!-- TAB BAR (Glassmorphism) -->
@@ -574,9 +590,9 @@
               class="flex-1 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all duration-300 text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50">Mois</button>
           </div>
         </header>
-        <main class="flex-1 px-6 relative">
+        <main class="flex-1 relative">
           <div class="absolute left-8 top-0 bottom-12 w-px timeline-line z-0 opacity-40"></div>
-          <div class="space-y-6 relative z-10 pt-4" id="daily-planning-container">
+          <div class="px-6 space-y-6 relative z-10 pt-4" id="daily-planning-container">
 
         </main>
       </div>
@@ -1781,23 +1797,31 @@
       const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayLabels = { Sunday: 'Dimanche', Monday: 'Lundi', Tuesday: 'Mardi', Wednesday: 'Mercredi', Thursday: 'Jeudi', Friday: 'Vendredi', Saturday: 'Samedi' };
       const dayName = days[now.getDay()];
+
+      // Update Title
+      const titleEl = document.getElementById('current-day-title');
+      if (titleEl) {
+        titleEl.innerHTML = `${dayLabels[dayName]} <span class="text-indigo-500/50 block text-[10px] tracking-[0.3em] font-bold">Mon Planning</span>`;
+      }
 
       const todaySchedule = WEEKLY_PLANNING[dayName] || [];
 
       if (todaySchedule.length === 0) {
+        container.className = "repos-container";
         container.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-12 text-center opacity-40">
-        <span class="material-symbols-outlined text-6xl mb-4 text-slate-500">event_busy</span>
-        <p class="font-headline font-bold text-white text-lg">Repos mérité !</p>
-        <p class="text-sm mt-2 text-slate-400">Le planning est vide.</p>
-      </div>`;
+          <div class="flex flex-col items-center justify-center">
+            <span class="material-symbols-outlined text-6xl mb-4 text-slate-700">event_busy</span>
+            <p class="font-headline font-black text-white text-lg uppercase tracking-tight">Repos mérité !</p>
+            <p class="text-[10px] mt-2 text-slate-500 uppercase tracking-widest font-bold">Le planning est vide</p>
+          </div>`;
         return;
       }
 
-      // Le Container Global : On le vide et on lui donne les classes strictes
-      container.className = "relative space-y-6";
-      container.innerHTML = ''; // On s'assure qu'il est bien vide
+      // Reset Container for normal view
+      container.className = "px-6 space-y-6 relative z-10 pt-4";
+      container.innerHTML = '';
 
       // La Ligne de Temps (Rail) Fixe
       let html = `<div class="timeline-rail"></div>`;
@@ -2325,6 +2349,12 @@
       container.className = "flex gap-4 overflow-x-auto snap-x pb-4 pt-2";
       container.style.cssText = "scrollbar-width: none;";
 
+      // Update Title
+      const titleEl = document.getElementById('current-day-title');
+      if (titleEl) {
+        titleEl.innerHTML = `Ma Semaine <span class="text-indigo-500/50 block text-[10px] tracking-[0.3em] font-bold">Mon Planning</span>`;
+      }
+
       const workDays = [
         { key: 'Monday', label: 'Lundi' },
         { key: 'Tuesday', label: 'Mardi' },
@@ -2367,7 +2397,13 @@
 
     function renderMonthlyView() {
       const container = document.getElementById('daily-planning-container');
-      container.className = "relative flex flex-col gap-2";
+      container.className = "px-6 relative flex flex-col gap-2";
+
+      // Update Title
+      const titleEl = document.getElementById('current-day-title');
+      if (titleEl) {
+        titleEl.innerHTML = `Mon Mois <span class="text-indigo-500/50 block text-[10px] tracking-[0.3em] font-bold">Mon Planning</span>`;
+      }
       container.style.cssText = "";
 
       const now = new Date();
@@ -2429,12 +2465,12 @@
         const globalHeader = document.getElementById('current-date');
         if (globalHeader) globalHeader.textContent = realDate;
 
-        // Les nouveaux éléments du header Planning
-        const titleEl = document.getElementById('planning-day-title');
-        const subEl = document.getElementById('planning-date-sub');
+        // Le nouveau Header Planning Symétrique
+        const titleEl = document.getElementById('current-day-title');
         const dayName = days[now.getDay()];
-        if (titleEl) titleEl.textContent = dayLabels[dayName] + ' — Mon Planning';
-        if (subEl) subEl.textContent = realDate;
+        if (titleEl) {
+          titleEl.innerHTML = `${dayLabels[dayName]} <span class="text-indigo-500/50 block text-[10px] tracking-[0.3em] font-bold">Mon Planning</span>`;
+        }
       } catch (e) { }
 
       renderDailyPlanning();
