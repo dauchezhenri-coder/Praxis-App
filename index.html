@@ -1957,23 +1957,32 @@
       }
     }, { once: true });
 
-    function parseICalDate(dtStr) {
+    function toJSDate(dtStr) {
       // Handles DTSTART;TZID=...:20251015T081000 or DTSTART:20251015T081000Z
       const raw = dtStr.includes(':') ? dtStr.split(':').pop() : dtStr;
-      const base = raw.replace('Z', '').trim();
-      // Format: YYYYMMDDTHHmmSS
-      const h = base.substring(9, 11);
-      const m = base.substring(11, 13);
-      return `${h}:${m}`;
+      const val = raw.trim();
+      const year = val.substring(0, 4);
+      const month = val.substring(4, 6);
+      const day = val.substring(6, 8);
+      const hour = val.substring(9, 11);
+      const min = val.substring(11, 13);
+      const sec = val.substring(13, 15) || '00';
+
+      const isUTC = val.endsWith('Z');
+      const iso = `${year}-${month}-${day}T${hour}:${min}:${sec}${isUTC ? 'Z' : ''}`;
+      return new Date(iso);
+    }
+
+    function parseICalDate(dtStr) {
+      const d = toJSDate(dtStr);
+      if (isNaN(d.getTime())) return '';
+      // Applique automatiquement le fuseau horaire local (ex: UTC+2 pour la France)
+      return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     }
 
     function iCalDayKey(dtStr) {
-      const raw = dtStr.includes(':') ? dtStr.split(':').pop() : dtStr;
-      const base = raw.replace('Z', '').trim();
-      const year = parseInt(base.substring(0, 4));
-      const month = parseInt(base.substring(4, 6)) - 1;
-      const day = parseInt(base.substring(6, 8));
-      const d = new Date(year, month, day);
+      const d = toJSDate(dtStr);
+      if (isNaN(d.getTime())) return 'Monday';
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       return days[d.getDay()];
     }
