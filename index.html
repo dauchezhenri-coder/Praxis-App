@@ -1846,11 +1846,12 @@
     };
 
     // Utilitaire : retourne la classe d'accent CSS selon le nom du cours
-    function getAccentClass(title) {
-      const t = title.toUpperCase();
+    function getAccentClass(course) {
+      if (course.type === 'kholle') return 'event-kholle';
+      if (course.type === 'ds') return 'event-ds';
+      const t = course.title.toUpperCase();
       if (/MATH|PHYSIQUE|SII|S\.I\./.test(t)) return 'card-accent-maths';
       if (/ANGLAIS|FRANCAIS|PHILO|HUMANIT/.test(t)) return 'card-accent-humanities';
-      if (/DS|COLLE|KHOLLE|EXAM/.test(t)) return 'card-accent-exam';
       return '';
     }
 
@@ -1922,7 +1923,7 @@
 
           <!-- Colonne Droite (La Carte Prestige) -->
           <div class="flex-1">
-            <div class="course-card-prestige ${isCurrent ? 'course-card-active' : ''} ${getAccentClass(course.title)} overflow-hidden">
+            <div class="course-card-prestige ${isCurrent ? 'course-card-active' : ''} ${getAccentClass(course)} overflow-hidden">
               <div class="flex justify-between items-start">
                 <div>
                   <h3 class="text-prestige-title mb-1">${course.title}</h3>
@@ -1999,10 +2000,96 @@
 
     let userGroup = '';
 
+    function startColloscopeAnalysis() {
+      if (!userGroup) {
+        showToast('❌ Veuillez d\'abord sélectionner un groupe');
+        return;
+      }
+
+      console.log('Analyse du Colloscope lancée pour le groupe:', userGroup);
+
+      try {
+        // --- 1. MAPPING DATA (PTSI) ---
+        const ROTATION_CYCLE = ['Maths', 'Physique', 'SI', 'Anglais', 'Français-Philo'];
+        const FIXED_SLOTS = {
+          'Maths': { day: 'Monday', start: '17:00', end: '18:00' },
+          'Anglais': { day: 'Tuesday', start: '16:45', end: '17:45' },
+          'Physique': { day: 'Wednesday', start: '16:00', end: '17:00' },
+          'SI': { day: 'Thursday', start: '17:00', end: '18:00' },
+          'Français-Philo': { day: 'Friday', start: '16:00', end: '17:00' }
+        };
+
+        const groupOffsets = { 'G1': 0, 'G2': 1, 'G3': 2, 'G4': 3 };
+        const offset = groupOffsets[userGroup] || 0;
+
+        // --- 2. GENERATE EVENTS ---
+        let colloscopeEvents = [];
+
+        // Simuler 5 semaines de planning
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        for (let week = 0; week < 5; week++) {
+          // Khôlle de la semaine
+          const subjectIndex = (week + offset) % ROTATION_CYCLE.length;
+          const subject = ROTATION_CYCLE[subjectIndex];
+          const slot = FIXED_SLOTS[subject];
+
+          if (slot) {
+            colloscopeEvents.push({
+              title: `KHÔLLE : ${subject.toUpperCase()}`,
+              start: slot.start,
+              end: slot.end,
+              room: 'Salle Khôlle',
+              day: slot.day,
+              teacher: 'Examinateur',
+              type: 'kholle',
+              isColloscope: true
+            });
+          }
+
+          // DS du Samedi
+          colloscopeEvents.push({
+            title: `DS : ${ROTATION_CYCLE[week % ROTATION_CYCLE.length].toUpperCase()}`,
+            start: '08:00',
+            end: '12:00',
+            room: 'Amphi Principal',
+            day: 'Saturday',
+            teacher: 'Surveillant',
+            type: 'ds',
+            isColloscope: true
+          });
+        }
+
+        // --- 3. INTEGRATION ---
+        // On nettoie les anciens événements colloscope s'ils existent
+        Object.keys(WEEKLY_PLANNING).forEach(day => {
+          WEEKLY_PLANNING[day] = WEEKLY_PLANNING[day].filter(ev => !ev.isColloscope);
+        });
+
+        // On injecte les nouveaux
+        colloscopeEvents.forEach(ev => {
+          if (WEEKLY_PLANNING[ev.day]) {
+            WEEKLY_PLANNING[ev.day].push(ev);
+          }
+        });
+
+        // --- 4. REFRESH ---
+        showToast('✨ Colloscope synchronisé avec succès !');
+        closeLoadingHub();
+
+        if (typeof renderDailyPlanning === 'function') renderDailyPlanning();
+        if (typeof renderWeeklyView === 'function') renderWeeklyView();
+
+      } catch (err) {
+        console.error('Erreur Analyse Colloscope:', err);
+        showToast('❌ Erreur lors de l\'analyse du document');
+      }
+    }
+
     function confirmColloscopeSelection() {
       userGroup = document.getElementById('kholle-group-select').value;
       console.log('User Group updated:', userGroup);
-      closeLoadingHub();
+      startColloscopeAnalysis();
     }
 
     function triggerPDFUpload() {
@@ -2452,7 +2539,8 @@
         { key: 'Tuesday', label: 'Mardi' },
         { key: 'Wednesday', label: 'Mercredi' },
         { key: 'Thursday', label: 'Jeudi' },
-        { key: 'Friday', label: 'Vendredi' }
+        { key: 'Friday', label: 'Vendredi' },
+        { key: 'Saturday', label: 'Samedi' }
       ];
 
       let html = '';
@@ -2469,7 +2557,7 @@
         } else {
           schedule.forEach(course => {
             html += `
-              <div class="course-card-mini ${getAccentClass(course.title)}">
+              <div class="course-card-mini ${getAccentClass(course)}">
                 <div class="flex justify-between items-center mb-1">
                   <span class="text-[9px] font-black text-indigo-400">${course.start} – ${course.end}</span>
                   <span class="text-[9px] text-slate-500 font-bold">${course.room}</span>
@@ -2500,15 +2588,13 @@
 
       const now = new Date();
       const year = now.getFullYear();
-      const month = now.getMonth(); // 0-indexed
+      const month = now.getMonth();
       const today = now.getDate();
 
-      // First day of the month (0=Sun, 1=Mon … 6=Sat), convert to Mon-based (0=Mon)
       const firstDayRaw = new Date(year, month, 1).getDay();
       const firstDayMon = (firstDayRaw === 0) ? 6 : firstDayRaw - 1;
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Map ISO weekday index (1=Mon=0 in our map) to WEEKLY_PLANNING key
       const dayKeyMap = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       const monthName = now.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
       const headerDays = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -2516,32 +2602,40 @@
       let html = `<h2 class="text-prestige-meta uppercase tracking-widest text-center mb-2">${monthName}</h2>`;
       html += `<div class="calendar-grid bg-slate-900/20 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden">`;
 
-      // Day headers
       headerDays.forEach(d => {
-        html += `<div class="text-[8px] font-black tracking-widest uppercase text-slate-500 py-3 text-center border-transparent">${d}</div>`;
+        html += `<div class="text-[8px] font-black tracking-widest uppercase text-slate-500 py-3 text-center">${d}</div>`;
       });
 
-      // Empty cells before first day
-      for (let i = 0; i < firstDayMon; i++) {
-        html += `<div></div>`;
-      }
+      for (let i = 0; i < firstDayMon; i++) html += `<div></div>`;
 
-      // Day cells
       for (let d = 1; d <= daysInMonth; d++) {
         const colIndex = (firstDayMon + d - 1) % 7;
         const dayKey = dayKeyMap[colIndex];
         const hasClasses = (WEEKLY_PLANNING[dayKey] || []).length > 0;
         const isToday = d === today;
-
         html += `<div class="${isToday ? 'calendar-day-active' : ''}">`;
         html += `<span class="text-[10px] font-bold ${isToday ? 'text-indigo-300' : 'text-slate-400'}">${d}</span>`;
-        if (hasClasses) {
-          html += `<div class="w-1 h-1 rounded-full bg-indigo-500 mt-1 shadow-[0_0_6px_#818cf8]"></div>`;
-        }
+        if (hasClasses) html += `<div class="w-1 h-1 rounded-full bg-indigo-500 mt-1 shadow-[0_0_6px_#818cf8]"></div>`;
         html += `</div>`;
       }
       html += `</div>`;
       container.innerHTML = html;
+    }
+
+    function showToast(message) {
+      const existing = document.getElementById('praxis-toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.id = 'praxis-toast';
+      toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 z-[200] px-6 py-3 rounded-2xl bg-slate-900/90 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-bottom-4 duration-300';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('animate-out', 'fade-out', 'slide-out-to-bottom-4');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
