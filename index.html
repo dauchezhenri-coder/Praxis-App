@@ -130,32 +130,48 @@
       @apply flex items-center justify-between w-full mb-8;
     }
     .planning-title-text {
-      @apply text-white font-black text-xl uppercase tracking-tighter;
+      @apply text-white font-black text-[22px] uppercase tracking-tighter;
     }
 
-    /* --- PRAXIS — Colloscope & Events Styles (Glow Effects) --- */
-    .event-kholle {
-      @apply relative border border-amber-500/40 bg-amber-500/5 shadow-[0_0_20px_rgba(245,158,11,0.15)] ring-1 ring-amber-500/20;
-    }
-    .event-kholle::before {
-      content: '';
-      @apply absolute left-0 top-0 bottom-0 w-1 bg-amber-500 rounded-l-2xl;
+    /* PRAXIS — Pixel Perfect Components (Stitch) */
+    .glass-card {
+      @apply bg-slate-900/60 border border-white/10 rounded-[32px] shadow-2xl backdrop-blur-2xl transition-all duration-300;
     }
 
-    .event-ds {
-      @apply relative border border-rose-500/40 bg-rose-500/5 shadow-[0_0_25px_rgba(244,63,94,0.2)] ring-1 ring-rose-500/30;
+    .btn-load-pill {
+      @apply px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-white hover:bg-indigo-600 hover:border-indigo-500 transition-all;
     }
-    .event-ds::before {
-      content: '';
-      @apply absolute left-0 top-0 bottom-0 w-1 bg-rose-500 rounded-l-2xl;
+
+    .btn-confirm-glow {
+      @apply py-3 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest shadow-[0_0_20px_rgba(79,70,229,0.4)] hover:bg-indigo-500 active:scale-95 transition-all;
     }
 
     .select-prestige {
-      @apply w-full bg-slate-900/60 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 appearance-none cursor-pointer backdrop-blur-md transition-all;
+      @apply w-full bg-slate-900/40 border border-white/5 rounded-xl py-3.5 px-4 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500/50 appearance-none cursor-pointer backdrop-blur-md transition-all;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236366f1'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m19 9-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 1rem center;
-      background-size: 1.2em;
+      background-size: 1.1em;
+    }
+
+    .amber-glow { @apply !text-amber-400; }
+    .rose-glow { @apply !text-rose-400; }
+
+    /* Event Styles */
+    .event-kholle {
+      @apply relative border border-amber-500/40 bg-amber-500/5 shadow-[0_0_15px_rgba(245,158,11,0.1)] ring-1 ring-amber-500/10;
+    }
+    .event-kholle::before {
+      content: '';
+      @apply absolute left-0 top-0 bottom-0 w-1 bg-amber-400 rounded-l-2xl;
+    }
+
+    .event-ds {
+      @apply relative border border-rose-500/40 bg-rose-500/5 shadow-[0_0_20px_rgba(244,63,94,0.15)] ring-1 ring-rose-500/20;
+    }
+    .event-ds::before {
+      content: '';
+      @apply absolute left-0 top-0 bottom-0 w-1 bg-rose-400 rounded-l-2xl;
     }
   }
     #flashcard {
@@ -1709,64 +1725,64 @@
       </div>
 
       <div class="relative p-8">
-        <div class="flex justify-between items-start mb-8">
+        <div class="flex justify-between items-start mb-6">
           <div>
             <p class="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-1">Praxis Hub</p>
             <h2 class="text-xl font-black text-white tracking-tight">Mode de chargement</h2>
           </div>
           <button onclick="closeLoadingHub()"
-            class="size-9 rounded-full bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
-            <span class="material-symbols-outlined text-slate-400" style="font-size:16px">close</span>
+            class="size-8 rounded-full bg-white/5 border border-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined text-slate-400" style="font-size:14px">close</span>
           </button>
         </div>
 
-        <!-- Option Cards -->
+        <div class="h-px w-full bg-white/5 mb-8"></div>
         <div id="hub-main-options" class="space-y-3">
           <!-- Option A: PDF -->
           <div onclick="triggerPDFUpload()"
-            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200 active:scale-[0.98]">
+            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200">
             <div class="flex items-center gap-4">
               <div
-                class="size-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-indigo-400">picture_as_pdf</span>
+                class="size-11 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-indigo-400" style="font-size:18px">picture_as_pdf</span>
               </div>
               <div class="flex-1">
-                <p class="text-sm font-bold text-white">Importer un PDF</p>
-                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Analyse de document académique</p>
+                <p class="text-xs font-bold text-white">Importer un PDF</p>
+                <p class="text-[9px] text-slate-500 font-medium mt-0.5">Analyse de document académique</p>
               </div>
-              <span class="material-symbols-outlined text-slate-600">chevron_right</span>
+              <span class="material-symbols-outlined text-slate-600" style="font-size:16px">chevron_right</span>
             </div>
           </div>
 
           <!-- Option B: Scanner -->
           <div onclick="triggerScanFromHub()"
-            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200 active:scale-[0.98]">
+            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200">
             <div class="flex items-center gap-4">
               <div
-                class="size-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-emerald-400">photo_camera</span>
+                class="size-11 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-emerald-400" style="font-size:18px">photo_camera</span>
               </div>
               <div class="flex-1">
-                <p class="text-sm font-bold text-white">Scanner une Image</p>
-                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Extraction par photo directe</p>
+                <p class="text-xs font-bold text-white">Scanner une Image</p>
+                <p class="text-[9px] text-slate-500 font-medium mt-0.5">Extraction par photo directe</p>
               </div>
-              <span class="material-symbols-outlined text-slate-600">chevron_right</span>
+              <span class="material-symbols-outlined text-slate-600" style="font-size:16px">chevron_right</span>
             </div>
           </div>
 
           <!-- Option C: Colloscope -->
           <div onclick="showColloscopeSelection()"
-            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200 active:scale-[0.98]">
+            class="group course-card-prestige hover:nav-button-active cursor-pointer transition-all duration-200">
             <div class="flex items-center gap-4">
               <div
-                class="size-12 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-105 transition-transform">
-                <span class="material-symbols-outlined text-amber-400">event_note</span>
+                class="size-11 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-amber-400" style="font-size:18px">event_note</span>
               </div>
               <div class="flex-1">
-                <p class="text-sm font-bold text-white">Colloscope Interactif</p>
-                <p class="text-[10px] text-slate-500 font-medium mt-0.5">Calendrier des khôlles et DS</p>
+                <p class="text-xs font-bold text-white">Colloscope Interactif</p>
+                <p class="text-[9px] text-slate-500 font-medium mt-0.5">Calendrier des khôlles et DS</p>
               </div>
-              <span class="material-symbols-outlined text-slate-600">expand_more</span>
+              <span class="material-symbols-outlined text-slate-600" style="font-size:18px">expand_more</span>
             </div>
           </div>
         </div>
@@ -1785,13 +1801,12 @@
             </select>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-2 gap-3 pt-2">
             <button onclick="hideColloscopeSelection()"
-              class="py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all">
+              class="py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all font-black text-[9px] tracking-widest">
               Annuler
             </button>
-            <button onclick="confirmColloscopeSelection()"
-              class="py-3 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 active:scale-95 transition-all">
+            <button onclick="confirmColloscopeSelection()" class="btn-confirm-glow">
               Confirmer
             </button>
           </div>
@@ -1982,9 +1997,11 @@
       if (sideLayer) sideLayer.classList.add('hidden');
     }
 
+    let userGroup = '';
+
     function confirmColloscopeSelection() {
-      const group = document.getElementById('kholle-group-select').value;
-      alert('Groupe ' + group + ' sélectionné. Prêt pour l\'analyse !');
+      userGroup = document.getElementById('kholle-group-select').value;
+      console.log('User Group updated:', userGroup);
       closeLoadingHub();
     }
 
