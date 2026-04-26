@@ -623,6 +623,17 @@
             </div>
           </div>
 
+          <!-- Section Mes Documents (Dynamique) -->
+          <div id="documents-section" class="hidden mt-8 mb-12 animate-in fade-in duration-500">
+            <div class="flex items-center justify-between mb-4 px-1">
+              <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.2em]">Mes Documents</h3>
+              <span class="text-[9px] text-slate-500 font-bold uppercase" id="doc-count">0 fichier</span>
+            </div>
+            <div id="documents-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Injecté via JS -->
+            </div>
+          </div>
+
           <!-- TAB BAR (Glassmorphism) -->
           <div
             class="flex gap-2 p-1.5 bg-slate-900/40 backdrop-blur-md rounded-xl border border-white/10 mt-6 shadow-lg">
@@ -1053,6 +1064,7 @@
           <span class="schedule-scanner__subtitle">Glissez votre PDF ici ou parcourez vos fichiers</span>
         </div>
         <input type="file" id="scheduleInput" accept=".pdf,image/*" style="display:none;" />
+        <input type="file" id="pdf-upload" accept=".pdf" style="display:none;" onchange="handlePDFUpload(event)" />
       </div>
     </div>
   </div>
@@ -1930,13 +1942,27 @@
                   <div class="flex items-center gap-4 text-prestige-meta mt-2">
                     <div class="flex items-center gap-1.5">
                       <span class="material-symbols-outlined text-[14px]">account_circle</span>
-                      <span>${course.prof}</span>
+                      <span>${course.prof || (course.teacher)}</span>
                     </div>
                     <div class="flex items-center gap-1.5">
                       <span class="material-symbols-outlined text-[14px]">meeting_room</span>
                       <span>Salle ${course.room}</span>
                     </div>
                   </div>
+                  
+                  <!-- Badge Document Attaché (Si correspondance) -->
+                  ${(() => {
+            const hasDoc = USER_DOCUMENTS.some(doc =>
+              doc.name.toUpperCase().includes(course.title.toUpperCase().replace('DS :', '').trim()) ||
+              (course.title.includes('DS') && doc.name.toUpperCase().includes('DS'))
+            );
+            return hasDoc ? `
+                      <div class="mt-3 flex items-center gap-1.5 text-[9px] font-black text-emerald-400 bg-emerald-500/10 w-fit px-2 py-1 rounded-lg border border-emerald-500/20 uppercase tracking-widest">
+                        <span class="material-symbols-outlined text-[12px]">attachment</span>
+                        Document attaché
+                      </div>
+                    ` : '';
+          })()}
                 </div>
               </div>
               
@@ -2093,11 +2119,108 @@
     }
 
     function triggerPDFUpload() {
-      const input = document.getElementById('scheduleInput');
+      const input = document.getElementById('pdf-upload');
       if (input) {
         input.click();
-        closeLoadingHub();
       }
+    }
+
+    let USER_DOCUMENTS = [];
+
+    function handlePDFUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.type !== 'application/pdf') {
+        showToast('❌ Seuls les fichiers PDF sont acceptés');
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+        showToast('❌ Fichier trop lourd (max 10Mo)');
+        return;
+      }
+
+      // Simulation de barre de progression dans la modale
+      const panel = document.getElementById('loading-hub-panel');
+      const originalHTML = panel.innerHTML;
+      panel.innerHTML = `
+        <div class="p-8 text-center space-y-6">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-500/20 flex items-center justify-center animate-pulse">
+            <span class="material-symbols-outlined text-indigo-400 text-3xl">upload_file</span>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-xl font-black text-white">Chargement...</h2>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest">${file.name}</p>
+          </div>
+          <div class="w-full bg-white/5 rounded-full h-1 overflow-hidden">
+            <div id="upload-progress" class="h-full bg-indigo-500 transition-all duration-300" style="width: 0%"></div>
+          </div>
+        </div>
+      `;
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 30;
+        const bar = document.getElementById('upload-progress');
+        if (bar) bar.style.width = Math.min(progress, 100) + '%';
+
+        if (progress >= 100) {
+          clearInterval(interval);
+
+          const doc = {
+            id: Date.now(),
+            name: file.name,
+            url: URL.createObjectURL(file),
+            size: (file.size / 1024).toFixed(1) + ' KB',
+            date: new Date().toLocaleDateString('fr-FR')
+          };
+
+          USER_DOCUMENTS.push(doc);
+          renderDocuments();
+          closeLoadingHub();
+
+          // Petit délai avant de restaurer l'HTML du panel (pour la prochaine ouverture)
+          setTimeout(() => {
+            panel.innerHTML = originalHTML;
+            showToast('✅ Document importé avec succès');
+            renderDailyPlanning(); // Pour actualiser les badges
+          }, 300);
+        }
+      }, 200);
+    }
+
+    function renderDocuments() {
+      const section = document.getElementById('documents-section');
+      const grid = document.getElementById('documents-grid');
+      const countEl = document.getElementById('doc-count');
+
+      if (!section || !grid) return;
+
+      if (USER_DOCUMENTS.length === 0) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      countEl.textContent = `${USER_DOCUMENTS.length} fichier${USER_DOCUMENTS.length > 1 ? 's' : ''}`;
+
+      grid.innerHTML = USER_DOCUMENTS.map(doc => `
+        <div class="group relative bg-slate-900/40 backdrop-blur-md rounded-2xl border border-white/5 p-4 hover:border-indigo-500/30 transition-all duration-300">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500/20 transition-colors">
+              <span class="material-symbols-outlined text-[20px]">description</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-[11px] font-black text-white truncate">${doc.name}</p>
+              <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">${doc.size} • ${doc.date}</p>
+            </div>
+            <a href="${doc.url}" target="_blank" class="size-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:bg-white/10 hover:text-white transition-all">
+              <span class="material-symbols-outlined text-[16px]">visibility</span>
+            </a>
+          </div>
+        </div>
+      `).join('');
     }
 
     function triggerScanFromHub() {
@@ -2556,16 +2679,21 @@
             </div>`;
         } else {
           schedule.forEach(course => {
+            const hasDoc = USER_DOCUMENTS.some(doc =>
+              doc.name.toUpperCase().includes(course.title.toUpperCase().replace('DS :', '').trim()) ||
+              (course.title.includes('DS') && doc.name.toUpperCase().includes('DS'))
+            );
+
             html += `
               <div class="course-card-mini ${getAccentClass(course)}">
                 <div class="flex justify-between items-center mb-1">
                   <span class="text-[9px] font-black text-indigo-400">${course.start} – ${course.end}</span>
-                  <span class="text-[9px] text-slate-500 font-bold">${course.room}</span>
+                  ${hasDoc ? '<span class="material-symbols-outlined text-[10px] text-emerald-400">attachment</span>' : ''}
                 </div>
-                <div class="text-title">${course.title}</div>
-                <div class="text-meta mt-1 flex items-center gap-1">
-                  <span class="material-symbols-outlined" style="font-size:10px">account_circle</span>
-                  ${course.prof}
+                <h4 class="text-[10px] font-bold text-white truncate mb-1">${course.title}</h4>
+                <div class="flex items-center gap-1 opacity-50">
+                  <span class="material-symbols-outlined text-[10px]">meeting_room</span>
+                  <span class="text-[8px] font-bold uppercase">${course.room}</span>
                 </div>
               </div>`;
           });
